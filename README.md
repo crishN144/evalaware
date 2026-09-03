@@ -16,8 +16,8 @@ base rate and the monitor prior work proposed raises four false alarms per catch
 where a monitor lives.*
 
 Everything below is recomputable from the raw dataset and raw activations. The numbers
-are in [FINDINGS.md](FINDINGS.md); the recompute-from-raw checklist for the six headline
-claims is [VERIFY_CRISH.md](VERIFY_CRISH.md). This is an audit of an existing method,
+are in [FINDINGS.md](FINDINGS.md); the verification record that re-derives each headline
+claim from raw data is [VERIFY_CRISH.md](VERIFY_CRISH.md), and `./verify.sh` re-runs it. This is an audit of an existing method,
 not a new one, and claims no priority for probing, for open models, or for Qwen.
 
 ## What is in here
@@ -50,7 +50,8 @@ figures/            pub_*.png
 job_*.sh            SLURM scripts for the GPU stages (cluster-specific paths inside)
 run_lock.sh         re-lock the headline metrics
 run_sens.sh         drive the 28-config sensitivity sweep
-VERIFY.md           the raw verification transcript behind VERIFY_CRISH.md
+VERIFY_CRISH.md     the verification record: each headline claim re-derived from raw data, with what came out
+verify.sh           re-runs the whole record in one go and writes a timestamped log
 build_writeup_v5.py the write-up as a docx, built from these artifacts
 ```
 
