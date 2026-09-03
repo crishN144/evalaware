@@ -147,7 +147,7 @@ def fig_c(c):
     ax.axhline(0.5, color=WARMGREY, ls="--", lw=1.2); ax.text(0.48, 0.487, "one false alarm per true catch", ha="right", va="top", color=WARMGREY, fontsize=10)
     ax.axvline(0.01, color=DEEMPH, ls=":", lw=0.8); ax.text(0.0105, 0.96, "1% base rate", fontsize=10, color=SUPPORT)
     ax.set_xscale("log"); ax.set_xlim(0.002, 0.5); ax.set_ylim(0, 1)
-    ax.set_xticks([0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]); ax.set_xticklabels(["0.2%", "0.5%", "1%", "2%", "5%", "10%", "20%", "50%"])
+    ax.set_xticks([0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]); ax.set_xticklabels(["0.5%", "1%", "2%", "5%", "10%", "20%", "50%"])
     ax.set_xlabel("fraction of transcripts that are evals (base rate)"); ax.set_ylabel("precision of a flag, at a 1% false-positive budget"); _ygrid(ax)
     _title(ax, "At the base rate a monitor faces, most flags are wrong", "honest = leave-one-family-out scores; 4B solid, 8B dashed")
     ax.legend(loc="lower right")

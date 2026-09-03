@@ -100,3 +100,11 @@ comparison, so `tests/test_compare_blackbox.py` asserts it.
 | `build_writeup_v3.py`, `build_writeup_v4.py` | docx builders; v4 is the current write-up |
 
 Environment: `source /mnt/scratch/bgxp240/interp/activate.sh` first. The default conda env has no sklearn and pytest collection fails outright without it.
+
+### Figure fonts
+
+`evalaware/pub_figures.py` asks for Inter (text) and JetBrains Mono (code), both OFL-licensed,
+falling back to DejaVu if absent. To match the shipped PNGs, drop the static TTFs into
+`~/.fonts/evalaware/ttf/` (Inter-{Regular,SemiBold,Bold}.ttf, JetBrainsMono-Regular.ttf) and
+delete matplotlib's `fontlist*.json` cache once. Sources: github.com/rsms/inter (v4.1),
+github.com/JetBrains/JetBrainsMono (v2.304).
