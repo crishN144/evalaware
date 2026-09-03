@@ -134,12 +134,14 @@ The two humans who built the dataset rank these rows in opposite orders.
   The string GOURD appears in exactly 37 rows, all in this family — so with the
   family held out, the probe has **never seen this system prompt in training.**
   Meanwhile hackaprompt's `You are a helpful assistant.` appears in 488 rows across
-  42 categories and is maximally familiar. Predicts eval rows get pushed toward the
-  middle (observed: 0.525–0.644) while hackaprompt is scored on its user-turn
-  content (observed: 0.832). Fits the pattern.
-- *Against:* untested directly. A swap experiment (transplant the GOURD system
-  prompt onto hackaprompt rows and vice versa) would settle it and has not been run.
-- **Verdict: consistent with all observations, not yet demonstrated.**
+  42 categories and is maximally familiar. Predicted eval rows pushed toward the
+  middle while hackaprompt is scored on user-turn content.
+- *Against — tested, and it fails (§3.1):* transplanting the system prompts moves
+  P(eval) in the **wrong direction** to explain the inversion. Giving hackaprompt
+  the GOURD prompt *raises* its P(eval) (0.835 → 0.939 on 4B); giving the eval
+  rows the generic prompt leaves them flat (4B) or lowers them (8B). Swapping both
+  deepens the inversion: 0.306 → 0.259 (4B), 0.512 → 0.299 (8B).
+- **Verdict: refuted as the mechanism. The inversion lives in the user turns.**
 
 **C3. The ground-truth label encodes provenance, not content.**
 - *For:* every one of the 56 rows is a prompt-injection attack. `eval_category=False`
@@ -157,6 +159,28 @@ The two humans who built the dataset rank these rows in opposite orders.
 `$A/inversion_transcripts.txt` (20 eval-labelled + all 19 deploy-labelled, with
 per-row probe and human scores) and judge whether the hackaprompt content reads as
 organic real-world usage.
+
+### 3.1 The system-prompt transplant (C2 test)
+
+Recompute: `sbatch job_transplant.sh` -> `$A/transplant_Qwen3-4B.json`, `$A/transplant_Qwen3-8B.json`, `figures/fig_i_transplant.png`
+
+Same 56 rows, user turns untouched, system prompts swapped; scored by a probe
+fit on the other 46 families (the leave-one-family-out fit). Re-extracting the
+`original` condition reproduces the cached LOFO score to ~0.004
+(0.306 vs 0.302 on 4B; 0.512 vs 0.508 on 8B).
+
+| condition | 4B AUROC | 4B mean P(eval) eval / deploy rows | 8B AUROC | 8B mean P(eval) eval / deploy rows |
+|---|---|---|---|---|
+| original | 0.306 | 0.560 / 0.835 | 0.512 | 0.719 / 0.670 |
+| swap_eval | 0.326 | 0.563 / 0.833 | 0.339 | 0.492 / 0.669 |
+| swap_deploy | 0.232 | 0.561 / 0.939 | 0.492 | 0.716 / 0.810 |
+| swap_both | 0.259 | 0.564 / 0.938 | 0.299 | 0.494 / 0.813 |
+
+`swap_eval` = mosscap/gandalf rows get "You are a helpful assistant."; `swap_deploy` =
+hackaprompt rows get the GOURD prompt; `swap_both` = both. The probe does respond to
+the system prompt, but the unseen GOURD prompt reads as *more* eval-like, not less,
+and swapping both makes the inversion worse on both models. The hackaprompt user
+turns are what the probe scores as eval-like, which is what C3 says.
 
 ---
 
@@ -262,7 +286,7 @@ Findings:
 
 1. Two model sizes and one dataset. Not a scaling law.
 2. `smolagents` (n=159) is the only clean mixed-family test and its estimate is unstable.
-3. C2 for the inversion is untested; the system-prompt swap experiment was not run.
+3. The system-prompt transplant (§3.1) swaps only the system turn at one layer per model; it refutes C2 as the mechanism but does not by itself prove C3.
 4. Transcripts are truncated to 4096 tokens (1024 head + 3072 tail); 30.6% of rows
    exceed this and lose their middle.
 5. The black-box frontier numbers are taken from the paper's released
@@ -283,4 +307,6 @@ Findings:
 | `mixed_families.json` | §4 incl. `_length_audit` |
 | `honest_reliability.json` | §5 |
 | `sensitivity.json` | §6 |
+| `transplant_Qwen3-*.json` | §3.1 transplant, all four conditions |
+| `figures/fig_e..i_*.png` | purity scan, per-category scores, annotators, lengths, transplant |
 | `figures/fig_a..d_*.png` | the four figures, captions state the honest reading |

@@ -50,15 +50,15 @@ def fig_f_per_category(c):
     ax.set_title("Held-out P(eval) per source category (blue = eval-labelled, grey = deploy-labelled, orange = prompt_injection)")
     for k, xi, m_ in zip(cats, x, mean):
         if k == "hackaprompt_dataset":
-            ax.annotate("hackaprompt: labelled DEPLOY,\nscored 0.83", (xi, m_), (xi - 14, 0.93), fontsize=7, arrowprops=dict(arrowstyle="->", lw=0.7))
-    mf = json.load(open(config.ARTIFACTS / "mixed_families.json"))["Qwen3-4B"]
+            ax.annotate("hackaprompt: labelled DEPLOY,\nscored 0.83", (xi, m_), (xi - 16, 0.86), fontsize=7, arrowprops=dict(arrowstyle="->", lw=0.7))
+    mf = json.load(open(config.ARTIFACTS / "mixed_families.json"))["Qwen3-4B"]["per_family"]
     fams = ["smolagents", "aider", "prompt_injection"]
     au = [mf[f]["auroc"] for f in fams]; ci = [mf[f]["ci95"] for f in fams]
     ax2.bar(range(3), au, color=[C_HON, C_DEP, C_PI], edgecolor="black", linewidth=0.4,
             yerr=[[a - l for a, (l, h) in zip(au, ci)], [h - a for a, (l, h) in zip(au, ci)]], capsize=4)
     ax2.axhline(0.5, ls=":", color="black"); ax2.set_ylim(0, 1)
     ax2.set_xticks(range(3)); ax2.set_xticklabels(["smolagents\n(clean)", "aider\n(length artefact)", "prompt_injection\n(inverted)"], fontsize=8)
-    for i, a in enumerate(au): ax2.text(i, a + 0.06, f"{a:.2f}", ha="center", fontsize=9)
+    for i, a in enumerate(au): ax2.text(i + 0.32, a, f"{a:.2f}", ha="left", va="center", fontsize=9)
     ax2.set_ylabel("held-out AUROC within family"); ax2.set_title("The 3 label-mixed families")
     _cap(fig, "HONEST READING: 44 of 47 families are single-label, so within-family AUROC exists for only three. prompt_injection sits below chance (0.30): "
               "its deploy-labelled hackaprompt rows get HIGHER P(eval) than its eval-labelled mosscap/gandalf rows. aider's 0.95 is a length readout and is discounted; smolagents is the only clean test.")
@@ -90,7 +90,7 @@ def fig_h_lengths(c):
     ax.hist(nt[c.y == 1], bins=bins, alpha=0.65, color=C_EVAL, label=f"eval (median {int(np.median(nt[c.y==1]))} tokens)")
     ax.hist(nt[c.y == 0], bins=bins, alpha=0.65, color=C_DEP, label=f"deploy (median {int(np.median(nt[c.y==0]))} tokens)")
     ax.set_xscale("log"); ax.set_xlabel("transcript length (tokens, log)"); ax.set_ylabel("rows")
-    ax.set_title(f"Corpus-wide: eval transcripts are SHORTER; length-only AUROC {roc_auc_score(c.y, nt):.2f}"); ax.legend()
+    a_len = roc_auc_score(c.y, nt); ax.set_title(f"Corpus-wide: eval transcripts are SHORTER; length alone separates labels at AUROC {max(a_len, 1-a_len):.2f}"); ax.legend()
     m = fam == "aider"
     ax2.hist(nt[m & (c.y == 1)], bins=bins, alpha=0.75, color=C_EVAL, label=f"aider eval (n={int((m&(c.y==1)).sum())})")
     ax2.hist(nt[m & (c.y == 0)], bins=bins, alpha=0.75, color=C_LEAK, label=f"aider deploy (n={int((m&(c.y==0)).sum())})")
@@ -117,8 +117,8 @@ def fig_i_transplant():
     ax.axhline(0.5, ls=":", color="black"); ax.set_ylim(0, 1)
     ax.set_xticks(np.arange(len(CONDITIONS)) + w / 2)
     ax.set_xticklabels(["original", "eval rows get\ngeneric prompt", "hackaprompt gets\nGOURD prompt", "both swapped"])
-    ax.set_ylabel("AUROC within prompt_injection (probe trained on other 46 families)")
-    ax.set_title("System-prompt transplant: does the inversion follow the prompt?"); ax.legend()
+    ax.set_ylabel("AUROC within prompt_injection")
+    ax.set_title("System-prompt transplant: does the inversion follow the prompt?\n(probe fit on the other 46 families; user turns untouched)"); ax.legend()
     fig.tight_layout(); fig.savefig(config.FIGURES / "fig_i_transplant.png", dpi=200); plt.close(fig)
 
 if __name__ == "__main__":

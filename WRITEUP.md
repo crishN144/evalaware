@@ -1,3 +1,5 @@
+> **Superseded:** the current write-up is `WRITEUP_v3.docx` (adds the system-prompt transplant, five figures, and the review edits). This file is the earlier prose draft.
+
 # Are eval-awareness probes trustworthy? A leakage + reliability audit on Qwen3
 
 Crish Nagarkar · MATS Winter 2027 (Neel Nanda stream) | Code: [repo link TBD]
