@@ -150,12 +150,12 @@ bullet("**Not a monitor.** At a 1% false-positive budget the honest probe catche
 bullet("**The headline number is leakage.** The naive probe scores 0.956. But 0 of 60 source datasets mix labels, so random CV rewards recognising the corpus. A bag of words with no model scores 0.936.")
 bullet("**A quarter of the AUROC was never real.** Hold out whole source families and the probe falls from 0.956 to 0.714 on 4B and 0.668 on 8B. I recomputed this from raw activations.")
 bullet("**On the only fair footing the probe loses to prompting.** On an unseen source the honest probe (0.714) sits below every frontier model prompted zero-shot on the same rows (0.717 to 0.820) and far below the humans (0.913).")
-bullet("**Scaling does not help.** 8B looks better on the leaky metric and worse on the honest one. Intervals overlap, so that is all I claim.")
+bullet("**Scaling does not help.** 8B looks better on the leaky metric and worse on the honest one. Intervals overlap; that is all I claim.")
 para("**Epistemic status.** Confident in the leakage result: same probe, same layer, same corpus, only the split changes. Confident in the base-rate arithmetic, which I checked by hand. The honest AUROC is a range, 0.67 to 0.74 across sensible readouts and 0.465 to 0.743 across all 28 configurations. Less confident about *why* prompt_injection inverts: two mechanisms are refuted by experiment, and the survivor rests on my reading of 34 transcripts.")
 
 h2("Experiment 1: Would it work as a monitor?")
-para("Neel's problem list asks it outright: at 1% prevalence, \"would we just get tons of false positives?\" On the honest scores, yes: precision 0.185, and a flag is more often right than wrong only above 4%.")
-img("pub_c_precision_vs_base_rate.png", "Fig 1. Precision of a flag against base rate. Slate = honest probe, crimson = what the leaky evaluation promised.")
+para("Neel's problem list asks it directly: at 1% prevalence, \"would we just get tons of false positives?\" On the honest scores, yes: precision 0.185, and a flag is more often right than wrong only above 4%.")
+img("pub_c_precision_vs_base_rate.png", "Fig 1. Precision against base rate. Slate = honest probe, crimson = what the leaky evaluation promised.")
 
 h2("Experiment 2: Where the 0.956 came from")
 para("No source category mixes labels, so a random split is a corpus-recognition test. Word counts alone reach 0.936.")
