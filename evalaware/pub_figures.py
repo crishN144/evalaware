@@ -98,7 +98,7 @@ def fig_a(c):
     ax.axhline(tf, color=WARMGREY, lw=1.6, ls="--"); ax.text(3.75, tf - 0.028, f"TF-IDF words, no model  {tf:.3f}", ha="right", color=WARMGREY, fontsize=10)
     hm = np.mean([lm["baselines_shared"]["human_author1"]["auroc"], lm["baselines_shared"]["human_author2"]["auroc"]])
     ax.axhline(hm, color=SAGE, lw=1.4, ls=":"); ax.text(3.75, hm - 0.028, f"human annotators  {hm:.2f}", ha="right", color=SAGE, fontsize=10)
-    ax.axhline(0.5, color=DEEMPH, lw=0.8, ls=":"); ax.text(3.75, 0.508, "chance", ha="right", color=DEEMPH, fontsize=10)
+    ax.axhline(0.5, color=DEEMPH, lw=0.8, ls=":"); ax.text(3.8, 0.5, "chance", ha="left", va="center", color=DEEMPH, fontsize=10, clip_on=False)
     ax.set_xticks(np.arange(4) + w / 2); ax.set_xticklabels(labels); ax.set_ylim(0.4, 1.02); ax.set_ylabel("AUROC"); _ygrid(ax)
     _title(ax, "Same probe, same layer, same corpus. Only the split changes.", "crimson = the number that is not real. 4B solid, 8B hatched. Bootstrap 95% intervals.")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol=2)
@@ -265,12 +265,12 @@ def fig_h(c):
     fig, (ax, ax2) = _fig(12, 5, ncols=2); bins = np.logspace(np.log10(nt.min()), np.log10(nt.max()), 40)
     ax.hist(nt[c.y == 1], bins=bins, alpha=0.8, color=SLATE, label=f"eval, median {int(np.median(nt[c.y == 1]))} tokens")
     ax.hist(nt[c.y == 0], bins=bins, alpha=0.8, color=SAND, edgecolor=EDGE, linewidth=0.3, label=f"deploy, median {int(np.median(nt[c.y == 0]))} tokens")
-    a = roc_auc_score(c.y, nt); ax.set_xscale("log"); ax.set_xlabel("transcript length (tokens)"); ax.set_ylabel("rows"); ax.legend(loc="upper right"); _ygrid(ax)
+    a = roc_auc_score(c.y, nt); ax.set_xscale("log"); ax.set_xlabel("transcript length (tokens)"); ax.set_ylabel("rows"); ax.set_ylim(0, ax.get_ylim()[1] * 1.18); ax.legend(loc="upper center"); _ygrid(ax)
     ax.text(0, 1.02, f"corpus-wide: eval rows are shorter; length alone reaches AUROC {max(a, 1 - a):.2f}", transform=ax.transAxes, fontsize=11, color=SUPPORT, va="bottom")
     m = fam == "aider"; ev, dp = nt[m & (c.y == 1)], nt[m & (c.y == 0)]
     ax2.hist(ev, bins=bins, alpha=0.85, color=SLATE, label=f"aider eval, n={len(ev)}"); ax2.hist(dp, bins=bins, alpha=0.85, color=SAND, edgecolor=EDGE, linewidth=0.3, label=f"aider deploy, n={len(dp)}")
     ax2.axvspan(ev.max(), dp.min(), color=SAND_DK, alpha=0.35); ax2.text(np.sqrt(ev.max() * dp.min()), ax2.get_ylim()[1] * 0.5, "gap", ha="center", va="center", rotation=90, **ANN)
-    ax2.set_xscale("log"); ax2.set_xlabel("transcript length (tokens)"); ax2.legend(loc="upper left"); _ygrid(ax2)
+    ax2.set_xscale("log"); ax2.set_xlabel("transcript length (tokens)"); ax2.set_ylim(0, ax2.get_ylim()[1] * 1.18); ax2.legend(loc="upper left"); _ygrid(ax2)
     ax2.text(0, 1.02, f"inside aider: ranges never overlap ({ev.min()}-{ev.max()} vs {dp.min()}-{dp.max()})", transform=ax2.transAxes, fontsize=11, color=SUPPORT, va="bottom")
     fig.text(0.1, 0.93, "Length is not the corpus-wide confound, but inside aider it is the whole story", fontsize=15, fontweight="bold", color=INK, va="bottom")
     _save(fig, "pub_h_lengths")
@@ -287,9 +287,10 @@ def fig_i(c):
         hi = [ci[s][k]["ci95"][1] - v for v, k in zip(vals, CONDITIONS)] if ci else None
         ax.bar(x, vals, w, edgecolor=INK, linewidth=0.5, label=s, yerr=[lo, hi] if ci else None, capsize=3, error_kw=dict(ecolor=INK, lw=0.8), **shade(s, SLATE))
         for xi, v, k in zip(x, vals, CONDITIONS):
-            ax.text(xi, v - 0.035, f"{v:.2f}", ha="center", color=SLATE, bbox=BOX, **LBL)
-    ax.axhline(0.5, ls=":", color=DEEMPH, lw=0.9); ax.text(3.75, 0.508, "chance", ha="right", color=DEEMPH, fontsize=10)
-    ax.set_ylim(0, 0.72); ax.set_xticks(np.arange(4) + w / 2)
+            top = ci[s][k]["ci95"][1] if ci else v
+            ax.text(xi, top + 0.012, f"{v:.2f}", ha="center", color=SLATE, **LBL)
+    ax.axhline(0.5, ls=":", color=DEEMPH, lw=0.9); ax.text(3.8, 0.5, "chance", ha="left", va="center", color=DEEMPH, fontsize=10, clip_on=False)
+    ax.set_ylim(0, 0.76); ax.set_xticks(np.arange(4) + w / 2)
     ax.set_xticklabels(["original", "eval rows get\ngeneric prompt", "hackaprompt gets\nGOURD prompt", "both swapped"])
     ax.set_ylabel("AUROC inside prompt_injection"); _ygrid(ax)
     _title(ax, "Swapping the system prompts does not cure the inversion", "prompt_injection family, n=56 per condition, bootstrap 95% CI")
