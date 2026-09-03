@@ -147,22 +147,22 @@ bullet("**The headline number is leakage.** The naive probe scores 0.956. But 0 
 bullet("**A quarter of the AUROC was never real.** Hold out whole source families and the probe falls from 0.956 to 0.714 on 4B and 0.668 on 8B. I recomputed this from raw activations.")
 bullet("**On the only fair footing the probe loses to prompting.** On an unseen source the honest probe (0.714) sits below every frontier model prompted zero-shot on the same rows (0.717 to 0.820) and far below the humans (0.913).")
 bullet("**Scaling does not help.** 8B looks better on the leaky metric and worse on the honest one. Intervals overlap, so that is all I claim.")
-para("**Epistemic status.** I am confident in the leakage result: it is a within-dataset contrast, same probe, same layer, same corpus, only the split changes. I am confident in the base-rate arithmetic, which I checked by hand. The honest AUROC is a range: 0.67 to 0.74 across sensible readouts, 0.465 to 0.743 across all 28 configurations. I am less confident about *why* the prompt_injection family inverts. Two mechanisms are refuted by experiment; the survivor rests on my reading of 34 transcripts, not on a computation.")
+para("**Epistemic status.** Confident in the leakage result: same probe, same layer, same corpus, only the split changes. Confident in the base-rate arithmetic, which I checked by hand. The honest AUROC is a range, 0.67 to 0.74 across sensible readouts and 0.465 to 0.743 across all 28 configurations. Less confident about *why* prompt_injection inverts: two mechanisms are refuted by experiment, and the survivor rests on my reading of 34 transcripts.")
 
 h2("Experiment 1: Would it work as a monitor?")
-para("Take the honest scores, budget 1% false positives, and ask what a flag is worth as evals get rarer. At 1% prevalence precision is 0.185. It crosses one-false-alarm-per-catch only above 4% prevalence.")
-img("pub_c_precision_vs_base_rate.png", "Fig 1. Precision of a flag against base rate. Slate is the honest probe, crimson is what the leaky evaluation promised. The 1% column is where a monitor lives.")
+para("Budget 1% false positives on the honest scores and ask what a flag is worth as evals get rarer. At 1% prevalence precision is 0.185; it crosses one-false-alarm-per-catch only above 4%.")
+img("pub_c_precision_vs_base_rate.png", "Fig 1. Precision of a flag against base rate. Slate = honest probe, crimson = what the leaky evaluation promised.")
 
 h2("Experiment 2: Where the 0.956 came from")
-para("No source category mixes labels, so provenance determines the label and a random split is a corpus-recognition test. Word counts alone reach 0.936.")
-img("pub_a_leaky_vs_honest.png", "Fig 2. Same probe, same layer, same corpus; only the split changes. Crimson is the number that is not real. Grey dashed is TF-IDF with no model. Bootstrap 95% intervals.")
+para("No source category mixes labels, so a random split is a corpus-recognition test. Word counts alone reach 0.936.")
+img("pub_a_leaky_vs_honest.png", "Fig 2. Only the split changes. Crimson is the number that is not real; grey dashed is TF-IDF with no model.")
 
 h2("Experiment 3: What survives an honest split")
 para("Across 28 layer and pooling configurations the honest number stays between 0.67 and 0.74. Both models peak late. The bigger model is worse on every honest comparison, which corroborates Manek (2606.29196), who put Qwen back into the scaling analysis and found the signal's depth shifts with scale.")
-img("pub_b_by_layer.png", "Fig 3. Leaky (crimson) against honest (slate) at every layer. The gap never closes. 8B's honest curve sits below 4B's.")
+img("pub_b_by_layer.png", "Fig 3. Leaky (crimson) against honest (slate) at every layer. The gap never closes.")
 
 h2("Experiment 4: The prompt_injection inversion")
-para("prompt_injection inverts for the probe, for nine frontier models, and for one of the two human annotators. Swapping the system prompts across the label boundary makes the inversion worse rather than curing it, so the signal is in the user turns. I read all 19 deploy-labelled transcripts and 15 eval-labelled ones myself: the \"deploy\" side is people typing \"I have been PWNED\" in homoglyphs and Cyrillic for a competition scoreboard. The label, not the probe, is what is wrong here.")
+para("prompt_injection inverts for the probe, for nine frontier models, and for one of the two annotators. Swapping the system prompts makes it worse, so the signal is in the user turns. I read all 19 deploy-labelled transcripts and 15 eval-labelled ones myself: the \"deploy\" side is people typing \"I have been PWNED\" in homoglyphs and Cyrillic for a competition scoreboard. The label, not the probe, is wrong.")
 
 para("None of this says eval-awareness is absent from Qwen3's residual stream. It says this probe, on this benchmark, cannot show it at monitor-grade reliability.")
 
