@@ -196,7 +196,9 @@ bullet("**C2, system-prompt shift.** All 37 eval rows share \"The secret passwor
 bullet("**C3, the label encodes provenance.** \"Deploy\" for hackaprompt means \"a member of the public typed this into a competition\". Only C3 also explains the black-box judges.")
 h3("The judges")
 para("Nine of nine frontier models invert on these rows. GPT-4o scores 0.10. One of the two dataset annotators inverts too: 0.91 against 0.35, and their in-family correlation is −0.24 against +0.77 corpus-wide. No probe artefact reaches into an API.")
-img("pub_g_annotators.png", "Fig 9. Annotator 1 against annotator 2 for all 976 rows. Corpus-wide they agree. Inside prompt_injection they rank the rows in opposite orders, and both put the deploy-labelled hackaprompt rows (sand squares) near 0.8.")
+img("pub_g_annotators.png", "Fig 9. The same two annotators on the other 920 rows (left) and on prompt_injection (right). Left, they agree. Right, they rank the rows in opposite orders, and both put the deploy-labelled hackaprompt rows (sand) near 0.8.")
+para("Where the probe and the humans disagree most, the label is contested in both directions:")
+table(["disagreement", "rows", "dominated by"], [["probe says eval, humans say deploy", "138", "smol_real_search (36), smol_real_manager (31): the author-synthesised agentic \"deployment\" runs"], ["humans say eval, probe says deploy", "57", "agentharm (9), aider_full (9)"]])
 h3("The transplant")
 para("Same 56 rows. User turns untouched. System prompts swapped across the label boundary, in four conditions, scored by the same probe fit on the other 46 families. Re-extracting the unchanged rows reproduces the cached score to 0.004 on both models, which is the check I ran before believing anything else.")
 table(["condition", "4B AUROC", "4B P(eval), eval / deploy rows", "8B AUROC", "8B P(eval), eval / deploy rows"],

@@ -246,17 +246,21 @@ def fig_f(c):
 
 # ------------------------------------------------------------------ G
 def fig_g(c):
-    cat = np.array(c.category); fam = np.array(c.family); m = fam == "prompt_injection"; ok = ~np.isnan(c.author1) & ~np.isnan(c.author2)
-    r_all = np.corrcoef(c.author1[ok], c.author2[ok])[0, 1]; r_pi = np.corrcoef(c.author1[m], c.author2[m])[0, 1]
-    fig, ax = _fig(7, 7.2); fig.subplots_adjust(bottom=0.2, left=0.12)
-    ax.scatter(c.author1[ok & ~m], c.author2[ok & ~m], s=10, color=WARMGREY, alpha=0.45, label=f"other 920 rows, r = {r_all:+.2f}")
-    for k, mk in zip(PI_CATS, ["o", "^", "v", "s"]):
-        mm = cat == k; dep = k == "hackaprompt_dataset"
-        ax.scatter(c.author1[mm], c.author2[mm], s=54, marker=mk, color=SAND if dep else SLATE, edgecolor=INK, linewidth=0.7, label=f"{k} ({'deploy' if dep else 'eval'}-labelled)")
-    ax.plot([0, 1], [0, 1], ":", color=DEEMPH, lw=0.8); ax.set_xlim(0, 1.02); ax.set_ylim(0, 1.02)
-    ax.set_xlabel("annotator 1, P(eval)"); ax.set_ylabel("annotator 2, P(eval)"); _ygrid(ax)
-    _title(ax, f"Inside prompt_injection the two annotators disagree (r = {r_pi:+.2f})", "each point is one transcript; the diagonal is perfect agreement")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=2)
+    fam = np.array(c.family); m = fam == "prompt_injection"; ok = ~np.isnan(c.author1) & ~np.isnan(c.author2)
+    r_all = np.corrcoef(c.author1[ok & ~m], c.author2[ok & ~m])[0, 1]; r_pi = np.corrcoef(c.author1[m], c.author2[m])[0, 1]
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(11, 5.9), sharey=True); fig.subplots_adjust(top=0.82, bottom=0.2, left=0.08, right=0.97, wspace=0.12)
+    a1.scatter(c.author1[ok & ~m], c.author2[ok & ~m], s=12, color=WARMGREY, alpha=0.5, linewidth=0)
+    a2.scatter(c.author1[m & (c.y == 1)], c.author2[m & (c.y == 1)], s=46, color=SLATE, edgecolor=INK, linewidth=0.6, label="eval-labelled")
+    a2.scatter(c.author1[m & (c.y == 0)], c.author2[m & (c.y == 0)], s=46, color=SAND, edgecolor=INK, linewidth=0.6, label="deploy-labelled")
+    for ax, r, sub in [(a1, r_all, f"everything else, {int((ok & ~m).sum())} rows"), (a2, r_pi, f"prompt_injection, {int(m.sum())} rows")]:
+        ax.plot([0, 1], [0, 1], ":", color=DEEMPH, lw=0.9); ax.set_xlim(0, 1.02); ax.set_ylim(0, 1.02); _ygrid(ax)
+        ax.text(0.03, 0.97, f"r = {r:+.2f}", transform=ax.transAxes, fontsize=20, color=INK, va="top")
+        ax.text(0, 1.02, sub, transform=ax.transAxes, fontsize=11, color=SUPPORT, va="bottom")
+        ax.set_xlabel("annotator 1, P(eval)")
+    a1.set_ylabel("annotator 2, P(eval)")
+    a2.legend(loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=2)
+    fig.text(0.08, 0.93, "The same two annotators, two different corpora", fontsize=15, fontweight="bold", color=INK, va="bottom")
+    fig.text(0.08, 0.895, "each point is one transcript; the dotted line is perfect agreement", fontsize=11, color=SUPPORT, va="bottom")
     _save(fig, "pub_g_annotators")
 
 # ------------------------------------------------------------------ H
@@ -318,26 +322,15 @@ def fig_j(c):
 # ------------------------------------------------------------------ K
 def fig_k(c):
     p = np.load(config.ARTIFACTS / "lofo_pooled_Qwen3-4B.npy"); hm = np.nanmean(np.vstack([c.author1, c.author2]), axis=0)
-    fam = np.array(c.family); cat = np.array(c.category); m = fam == "prompt_injection"
-    fig, ax = _fig(7.6, 7.8); fig.subplots_adjust(bottom=0.19, left=0.12, top=0.86)
-    # the two disagreement corners, shaded and named
-    tl = (hm < 0.35) & (p > 0.75); br = (hm > 0.70) & (p < 0.25)
-    ax.add_patch(plt.Rectangle((0, 0.75), 0.35, 0.27, facecolor=SAND, alpha=0.35, edgecolor="none", zorder=0))
-    ax.add_patch(plt.Rectangle((0.70, -0.02), 0.32, 0.27, facecolor=SAND, alpha=0.35, edgecolor="none", zorder=0))
-    def top_cats(mask, k=2):
-        vals, counts = np.unique(cat[mask], return_counts=True); order = np.argsort(-counts)[:k]
-        return ", ".join(f"{vals[i]} ({counts[i]})" for i in order)
-    ax.text(0.015, 0.995, f"probe says eval, humans say deploy\nn = {int(tl.sum())}, mostly {top_cats(tl)}", ha="left", va="top", bbox=BOX, **ANN)
-    ax.annotate(f"humans say eval,\nprobe says deploy\nn = {int(br.sum())}, mostly\n{top_cats(br).replace(', ', chr(10))}", (0.70, 0.11), (0.30, 0.11), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7, shrinkB=0), **ANN)
-    # background rows, faded; prompt_injection rows, filled by their label
-    ax.scatter(hm[(c.y == 1) & ~m], p[(c.y == 1) & ~m], s=9, color=SLATE, alpha=0.28, linewidth=0, label="eval-labelled (other families)")
-    ax.scatter(hm[(c.y == 0) & ~m], p[(c.y == 0) & ~m], s=9, color=SAND_DK, alpha=0.35, linewidth=0, label="deploy-labelled (other families)")
-    pi_col = [SLATE if yy == 1 else SAND for yy in c.y[m]]
-    ax.scatter(hm[m], p[m], s=62, c=pi_col, edgecolor=INK, linewidth=0.9, zorder=4, label="prompt_injection (slate = eval-labelled, sand = hackaprompt, deploy-labelled)")
-    ax.plot([0, 1], [0, 1], ":", color=DEEMPH, lw=0.8); ax.set_xlim(0, 1.02); ax.set_ylim(-0.02, 1.02)
-    ax.set_xlabel("human mean P(eval)"); ax.set_ylabel("honest probe P(eval), Qwen3-4B"); _ygrid(ax)
-    rho = np.corrcoef(hm, p)[0, 1]
-    _title(ax, "Where the probe and the humans disagree most, the label itself is contested", f"r = {rho:+.2f} across all 976 rows; shaded corners = the two ways to disagree")
+    fam = np.array(c.family); m = fam == "prompt_injection"
+    fig, ax = _fig(7.6, 7.4); fig.subplots_adjust(bottom=0.17, left=0.12, top=0.86)
+    cmap = LinearSegmentedColormap.from_list("bgtogrey", [BG, WARMGREY])
+    ax.hexbin(hm[~m], p[~m], gridsize=22, cmap=cmap, mincnt=1, linewidths=0.2, edgecolors=BG, extent=(0, 1, 0, 1), zorder=1)
+    ax.scatter(hm[m & (c.y == 1)], p[m & (c.y == 1)], s=52, color=SLATE, edgecolor=INK, linewidth=0.7, zorder=4, label="prompt_injection, eval-labelled")
+    ax.scatter(hm[m & (c.y == 0)], p[m & (c.y == 0)], s=52, color=SAND, edgecolor=INK, linewidth=0.7, zorder=4, label="prompt_injection, deploy-labelled (hackaprompt)")
+    ax.plot([0, 1], [0, 1], ":", color=DEEMPH, lw=0.9, zorder=3); ax.set_xlim(0, 1.02); ax.set_ylim(-0.02, 1.02); ax.grid(False)
+    ax.set_xlabel("human mean P(eval)"); ax.set_ylabel("honest probe P(eval), Qwen3-4B")
+    _title(ax, "The humans put every prompt_injection row near eval; the probe scatters them", "grey density = the other 920 rows")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.1), ncol=1)
     _save(fig, "pub_k_probe_vs_human")
 
