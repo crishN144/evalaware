@@ -116,13 +116,16 @@ def table(header, rows):
         for cell in row.cells:
             for para in cell.paragraphs: para.paragraph_format.space_after = Pt(2); para.paragraph_format.line_spacing = 1.15
     doc.add_paragraph().paragraph_format.space_after = Pt(0)   # table spacer, removed by the final sweep
-def suspicion(n, title, trigger, test, result, verdict, cost):
+def suspicion(n, title, trigger, test, result, verdict, cost, stray=None):
     h3(f"Suspicion {n}: \"{title}\"")
-    for lab, val in [("Trigger", trigger), ("Cheapest test", test), ("Result", result), ("Verdict", verdict), ("Cost", cost)]:
+    for lab, val in [("Why I looked", trigger), ("What I checked", test), ("Result", result), ("Verdict", verdict), ("Cost", cost)]:
         p = doc.add_paragraph(); p.paragraph_format.left_indent = Inches(0.25); p.paragraph_format.space_after = Pt(2)
         r = p.add_run(f"{lab}: "); r.bold = True; r.font.size = Pt(10)
         add_rich(p, val)
         for run in p.runs[1:]: run.font.size = Pt(10)
+    if stray:
+        p = doc.add_paragraph(); p.paragraph_format.left_indent = Inches(0.25); add_rich(p, stray)
+        for run in p.runs: run.font.size = Pt(10)
     doc.add_paragraph()
 
 # ============================== TITLE ==============================
@@ -290,10 +293,13 @@ para("**Resources, and what each one did to the plan**")
 bullet("[Probing and Steering Evaluation Awareness of Language Models](https://arxiv.org/abs/2507.01786), Nguyen et al.")
 bullet2("The foundational probe, Llama-3.3-70B, mean-difference direction, Youden threshold on SAD. Proposes live monitoring.")
 bullet2("Best AUROC 0.83 on synthetic contrastive prompts. Never touches real transcripts.")
-bullet2("**What I took from it:** §4.2.2 says test-classified prompts \"often contain more structured or formatted elements\" and then moves on. I read that sentence three times. That untested sentence is where this project starts.")
+bullet2("What the training data actually is, from the live repo: `contrastive_dataset.json`, 204 yes/no questions asking the model whether it is being tested; and `tom_vs_sharegpt.json`, 539 items whose format is Choices: (A) a theory-of-mind story (B) a ShareGPT query. A probe trained to tell one corpus from another corpus.")
+bullet2("Their README, verbatim: \"Steering with this direction has no causal effects, but with SAE features has some effects on showing sandbagging.\"")
+bullet2("**What I took from it:** §4.2.2 says test-classified prompts \"often contain more structured or formatted elements\" and then moves on. I read that sentence three times. That untested sentence is where this project starts. And tom_vs_sharegpt is my thesis sitting inside their training data.")
 bullet("[Large Language Models Often Know When They Are Being Evaluated](https://arxiv.org/abs/2505.23836), Needham et al.")
 bullet2("The benchmark: 976 real transcripts; 61 source datasets in the paper, 60 present in the released file; two annotators; nine frontier models' judgments released. Dataset [jjpn2/eval_awareness](https://huggingface.co/datasets/jjpn2/eval_awareness), code [jjpn97/eval_awareness](https://github.com/jjpn97/eval_awareness).")
 bullet2("Black-box only. Claude 3.5 Sonnet 0.83, human 0.92. Models over-classify as eval.")
+bullet2("Zipped and encrypted against scraping, with the password committed in the repo's own decrypt script; the first thing the loader wanted from me was that password. SAD does the same, in unzip.sh. Two benchmarks careful about contamination hygiene, in a project about whether the resulting numbers mean what people think.")
 bullet2("**What I took from it:** it is the only real-transcript benchmark and no probing paper had used it. Also that its labels are provenance labels, which I did not think about until Experiment 4 forced me to.")
 bullet("[Representational Depth of Evaluation Awareness Shifts With Scale](https://arxiv.org/abs/2606.29196), Manek")
 bullet2("11 open models, Qwen-2.5 at six sizes. Scaling non-monotonic in Qwen. Small Qwen peaks late, large Qwen early. Contamination diagnostics found no narrow memorisation.")
@@ -306,6 +312,7 @@ bullet("[Steering Llama 2 via Contrastive Activation Addition](https://arxiv.org
 bullet2("The diff-of-means construction that Nguyen's probe actually is. Needed to state the LR-vs-CAA distinction precisely.")
 bullet("[Linear Control of Test Awareness](https://arxiv.org/abs/2505.14617) (now titled The Hawthorne Effect in Reasoning Models), Abdelnabi & Salem, and [Steering Evaluation-Aware Language Models to Act Like They Are Deployed](https://arxiv.org/abs/2510.20487), Hua, Qin, Marks & Nanda")
 bullet2("The causal half of the field. Both steer; neither reports base rates. Both rejected Qwen for practical reasons.")
+bullet2("The model card for Hua et al.'s released organism (timhua/wood_v2_sftr4_filt) carries a caveat the paper does not: \"less robust to prompting compared to what we originally thought: prompts like 'Note: Not Evaluation' can convince it that it is being deployed even when the evaluation cue is present.\" A retraction published on an artefact, not in the paper. I found it by opening the card instead of stopping at the abstract.")
 bullet("[Is Evaluation Awareness Just Format Sensitivity?](https://arxiv.org/abs/2603.19426), Devbunova")
 bullet2("Found at write-up time. Controlled 2×2 on synthetic prompts, probes track benchmark format. My Experiment 2 from the other side.")
 bullet("[Time Travel in LLMs](https://arxiv.org/abs/2308.08493), Golchin & Surdeanu; [How Much are LLMs Contaminated?](https://arxiv.org/abs/2404.00699), Ravaut et al.; Saito & Rehmsmeier [2015](https://doi.org/10.1371/journal.pone.0118432)")
@@ -313,7 +320,7 @@ bullet2("Contamination detection, and the base-rate argument in its general form
 bullet("[Sonnet 4.5 system card](https://www.anthropic.com/claude-sonnet-4-5-system-card); Redwood, [Sonnet 4.5's eval gaming](https://blog.redwoodresearch.org/p/sonnet-45s-eval-gaming-seriously)")
 bullet2("Why anyone wants a monitor in the first place.")
 
-para("**How this was made.** Claude Code did the implementation, in small steps that I specified; I set the question, the experiment list, and what counts as evidence. Every headline number has a recompute-from-raw command in `VERIFY_CRISH.md`. I ran that checklist end to end, and I read the Experiment 4 transcripts myself, because the checklist says that part cannot be delegated. The rest of this section is the audit as a chain of suspicions, which is also the argument of the document in miniature.")
+para("**How this was made.** Claude Code did the implementation, in small steps that I specified; I set the question, the experiment list, and what counts as evidence. Every headline number has a recompute-from-raw command in `VERIFY_CRISH.md`. I ran that checklist end to end, and I read the Experiment 4 transcripts myself, because the checklist says that part cannot be delegated. The rest of this section is the audit as a chain of suspicions, which is also the argument of the document in miniature. The five-field shape was suggested to me; what is in the fields was not.")
 
 suspicion(1, "0.956 is too good",
           "First probe result landed at 0.956. Nothing in this field gets 0.956 on real transcripts.",
@@ -356,7 +363,8 @@ suspicion(7, "balanced AUROC is hiding the deployment failure",
           "TPR at a 1% FPR budget on the honest scores, then Bayes by hand at 1%, 5%, 10% prevalence.",
           "TPR 0.205, precision 0.185 at 1%. Twenty catches, ninety false alarms per 10,000 transcripts. Hand computation 0.18522, pipeline 0.18506.",
           "Confirmed. The monitor does not survive contact with base rates. This became the title.",
-          "~30min.")
+          "~30min.",
+          stray="The cheapest thing I did produced the title. Half an hour of arithmetic on numbers I already had, after two days of GPU jobs.")
 suspicion(8, "the agent's numbers are wrong",
           "Every number above was produced by code I directed but did not type.",
           "VERIFY_CRISH.md: six claims, each recomputed from the raw dataset or raw activations, none from cached JSON. Tolerance 0.002 for BLAS jitter. Then the test suite.",
