@@ -134,7 +134,7 @@ sub = doc.add_paragraph(); r = sub.add_run("The published headline was a corpus 
 para("Crish Nagarkar · MATS Winter 2027 (Neel Nanda stream)")
 para("Code: [GitHub URL goes here. Repo is committed locally at `interp/evalaware`, `data/` excluded per the dataset licence. Push, then paste the link.]")
 para("**Epistemic status:** every headline number recomputed from raw data by hand; checklist in the repo. Two models, one benchmark.")
-para("**Time:** [X.X] hours (Toggl screenshot at the top of the Log Book).")
+para("**Time:** about 15 hours. An estimate, not a tracked figure: no timer was running. It is built from the per-step costs in the Log Book (about 9 hours of experiments and verification) plus the write-up and figure rounds, and cross-checked against file and commit timestamps.")
 
 # ============================ EXEC SUMMARY =========================
 h1("Executive Summary")
@@ -286,7 +286,6 @@ numbered("Two self-corrections from verification are folded in above: the honest
 
 # ============================= LOG BOOK ============================
 h1("Log Book")
-placeholder("[Toggl screenshot goes here, with total hours]")
 para("**Tags from Neel's Suggested Research Problems:** [fill from the Recommended Problems tab; nearest matches: eval awareness in open-source models; model forensics; stress-testing a published result]")
 
 para("**Resources, and what each one did to the plan**")
