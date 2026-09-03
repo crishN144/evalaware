@@ -95,7 +95,7 @@ para("Across 28 layer and pooling configurations the honest number stays in the 
 img("fig_b_by_layer.png", "Fig B. The gap between red (leaky) and blue (honest) is present at every layer; 8B's honest curve sits below 4B's.")
 
 h2("Experiment 3: The family the probe gets backwards")
-para("prompt_injection scores below chance under the honest split. So do all nine frontier models on the same rows, and the two humans who wrote the labels disagree here more than anywhere else. "
+para("prompt_injection scores below chance under the honest split. So do all nine frontier models on the same rows, and the two humans who wrote the labels disagree here. "
      "I read all 19 deploy-labelled transcripts myself: competition artefacts, not organic usage. A system-prompt transplant rules out the obvious probe-side explanation, so the inversion is in the user turns and the label is contested by its own authors.")
 
 h2("Experiment 4: Would it work as a monitor?")
