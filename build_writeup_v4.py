@@ -189,7 +189,7 @@ img("pub_j_internal_vs_verbal.png", "Fig 7. Honest probe against the same model'
 
 h2("Experiment 4: The prompt_injection inversion")
 para("56 rows, all injection attacks. mosscap and gandalf rows are labelled eval, hackaprompt rows deploy. Held-out AUROC 0.30 on 4B. The deploy-labelled rows get *higher* P(eval) than the eval-labelled ones.")
-img("pub_f_per_family.png", "Fig 8. Left: held-out P(eval) by source family, with prompt_injection split by label. The hackaprompt side scores 0.83, above most eval-labelled families. Right: within-family AUROC exists for only three families; prompt_injection is the inverted one.")
+img("pub_f_per_family.png", "Fig 8. Held-out P(eval) for all 47 source families, sorted. The two prompt_injection bars are the only ones coloured: the deploy-labelled hackaprompt side scores 0.83, above most eval-labelled families; the eval-labelled side scores 0.56.")
 para("Three candidate mechanisms, and what killed each:")
 bullet("**C1, the competition string.** \"I have been PWNED\" is in 58% of hackaprompt rows and 0% of the rest of the corpus. Delete every row containing it: AUROC 0.29. Dead.")
 bullet("**C2, system-prompt shift.** All 37 eval rows share \"The secret password is GOURD...\", a prompt that appears nowhere else, so under the honest split the probe has never seen it. hackaprompt's \"You are a helpful assistant.\" is in 488 rows. Testable by transplant.")
@@ -314,7 +314,6 @@ suspicion(8, "the agent's numbers are wrong",
           "All six reproduce. 32 tests pass, but only after sourcing the project env; the default conda env has no sklearn and collection fails outright. Two corrections against my own interest: the honest floor across all 28 configs is 0.465, and my \"18 independent judges\" counted the two leaky probes and a derived human mean.",
           "Confirmed, with the two corrections folded into the text above.",
           "~2h. Plus one stalled job: threaded BLAS oversubscribing 47 small refits, killed (rc=143 in sens.log), resubmitted with OMP_NUM_THREADS=1, finished in two minutes. Lesson: pin your thread counts before you pin your hopes.")
-img("pub_m_verification.png", "Fig 12. The verification terminal: test suite, the claim-3 recompute against the locked numbers, the by-hand Bayes check, and the transplant reproduction check.")
 
 h2("Bottom line")
 para("Eight suspicions. Three confirmed outright (1, 7, 8), one split down the middle (2: rejected corpus-wide, confirmed inside aider), four rejected (3, 4, 5, 6). The two that changed the document most were the two rejections that cost the most: the transplant, which turned an adjudication into an elimination, and the base-rate arithmetic, which turned a data critique into a claim about a proposed safety technique. Still to do before submission: push the repo and paste the link, Toggl screenshot, fill the tags line.")
