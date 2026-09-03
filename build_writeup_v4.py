@@ -12,17 +12,44 @@ from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 from docx.opc.constants import RELATIONSHIP_TYPE
 
+SLATE, INK, SUPPORT, CRIMSON, RULE = RGBColor(0x2E, 0x5C, 0x8A), RGBColor(0x2B, 0x27, 0x24), RGBColor(0x6B, 0x63, 0x5A), RGBColor(0xB0, 0x4A, 0x3F), "C9C0B4"
+BODY_FONT, HEAD_FONT, MONO_FONT = "Spectral", "Inter", "IBM Plex Mono"
+
+def _set_font(style_or_run, name, size=None, bold=None, color=None):
+    f = style_or_run.font; f.name = name
+    if size is not None: f.size = Pt(size)
+    if bold is not None: f.bold = bold
+    if color is not None: f.color.rgb = color
+    rpr = style_or_run.element.get_or_add_rPr(); rf = rpr.find(qn("w:rFonts"))
+    if rf is None: rf = OxmlElement("w:rFonts"); rpr.insert(0, rf)
+    for k in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs"): rf.set(qn(k), name)
+    for k in ("w:asciiTheme", "w:hAnsiTheme", "w:eastAsiaTheme", "w:cstheme"):
+        if rf.get(qn(k)) is not None: del rf.attrib[qn(k)]
+    if color is not None:                      # kill theme colour so the rgb wins
+        c = rpr.find(qn("w:color"))
+        if c is not None:
+            for k in ("w:themeColor", "w:themeShade", "w:themeTint"):
+                if c.get(qn(k)) is not None: del c.attrib[qn(k)]
+
 FIG = "/mnt/scratch/bgxp240/interp/evalaware/figures/"
 OUT = "/mnt/scratch/bgxp240/interp/evalaware/WRITEUP_v4.docx"
 
 doc = Document()
-st = doc.styles["Normal"]; st.font.name = "Calibri"; st.font.size = Pt(11)
+st = doc.styles["Normal"]; _set_font(st, BODY_FONT, 11, color=INK); st.paragraph_format.line_spacing = 1.4; st.paragraph_format.space_after = Pt(8)
+for name, size in [("Title", 24), ("Heading 1", 17), ("Heading 2", 13.5), ("Heading 3", 11.5)]:
+    hs = doc.styles[name]; _set_font(hs, HEAD_FONT, size, bold=True, color=SLATE); hs.paragraph_format.space_before = Pt(18 if name != "Title" else 0); hs.paragraph_format.space_after = Pt(6)
+    if name == "Title":
+        b = hs.element.pPr.find(qn("w:pBdr"))
+        if b is not None: hs.element.pPr.remove(b)
+for name in ("List Bullet", "List Bullet 2", "List Number"):
+    _set_font(doc.styles[name], BODY_FONT, 11, color=INK)
 
 def add_link(p, text, url):
     r_id = p.part.relate_to(url, RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
     hl = OxmlElement("w:hyperlink"); hl.set(qn("r:id"), r_id)
     r = OxmlElement("w:r"); rPr = OxmlElement("w:rPr")
-    c = OxmlElement("w:color"); c.set(qn("w:val"), "0563C1"); rPr.append(c)
+    c = OxmlElement("w:color"); c.set(qn("w:val"), "2E5C8A"); rPr.append(c)
+    rf = OxmlElement("w:rFonts"); [rf.set(qn(k), BODY_FONT) for k in ("w:ascii", "w:hAnsi", "w:eastAsia", "w:cs")]; rPr.append(rf)
     u = OxmlElement("w:u"); u.set(qn("w:val"), "single"); rPr.append(u)
     r.append(rPr); t = OxmlElement("w:t"); t.text = text; t.set(qn("xml:space"), "preserve"); r.append(t)
     hl.append(r); p._p.append(hl)
@@ -34,7 +61,7 @@ def add_rich(p, text):
         if m: add_link(p, m.group(1), m.group(2))
         elif tok.startswith("**") and tok.endswith("**"): r = p.add_run(tok[2:-2]); r.bold = True
         elif tok.startswith("`") and tok.endswith("`"):
-            r = p.add_run(tok[1:-1]); r.font.name = "Consolas"; r.font.size = Pt(10)
+            r = p.add_run(tok[1:-1]); _set_font(r, MONO_FONT, 9.5)
         else: p.add_run(tok)
     return p
 
@@ -46,23 +73,38 @@ def bullet(t): add_rich(doc.add_paragraph(style="List Bullet"), t)
 def bullet2(t): add_rich(doc.add_paragraph(style="List Bullet 2"), t)
 def numbered(t): add_rich(doc.add_paragraph(style="List Number"), t)
 def code(t):
-    p = doc.add_paragraph(); r = p.add_run(t); r.font.name = "Consolas"; r.font.size = Pt(9)
+    p = doc.add_paragraph(); r = p.add_run(t); _set_font(r, MONO_FONT, 9); p.paragraph_format.line_spacing = 1.25
     p.paragraph_format.left_indent = Inches(0.3); p.paragraph_format.space_after = Pt(6)
 def img(name, caption, width=6.3):
     p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.add_run().add_picture(FIG + name, width=Inches(width))
     c = doc.add_paragraph(); add_rich(c, caption)
-    for run in c.runs: run.font.size = Pt(9.5); run.italic = True; run.font.color.rgb = RGBColor(0x33, 0x33, 0x33)
+    for run in c.runs: run.font.size = Pt(9.5); run.italic = True; run.font.color.rgb = SUPPORT
 def placeholder(t):
-    p = doc.add_paragraph(); r = p.add_run(t); r.bold = True; r.font.color.rgb = RGBColor(0xB0, 0x30, 0x30)
+    p = doc.add_paragraph(); r = p.add_run(t); r.bold = True; r.font.color.rgb = CRIMSON
+NUMERIC = re.compile(r"^[\s\d.,%±/→\-–x×]+$")
+def _borders(el, spec):
+    """spec: dict edge -> (val, size) on a w:tblBorders / w:tcBorders element."""
+    for edge, (val, size) in spec.items():
+        b = OxmlElement(f"w:{edge}"); b.set(qn("w:val"), val); b.set(qn("w:sz"), str(size)); b.set(qn("w:space"), "0"); b.set(qn("w:color"), RULE); el.append(b)
 def table(header, rows):
-    t = doc.add_table(rows=1, cols=len(header)); t.style = "Light Grid Accent 1"
+    t = doc.add_table(rows=1, cols=len(header)); t.style = "Table Grid"
+    tblPr = t._tbl.tblPr
+    for old in tblPr.findall(qn("w:tblBorders")): tblPr.remove(old)
+    tb = OxmlElement("w:tblBorders"); _borders(tb, {"top": ("single", 8), "bottom": ("single", 8), "left": ("nil", 0), "right": ("nil", 0), "insideH": ("nil", 0), "insideV": ("nil", 0)}); tblPr.append(tb)
+    numeric_col = [all(NUMERIC.match(str(r[i]).strip()) for r in rows if str(r[i]).strip()) for i in range(len(header))]
     for i, h in enumerate(header):
-        cell = t.rows[0].cells[i]; cell.text = ""; r = cell.paragraphs[0].add_run(h); r.bold = True; r.font.size = Pt(9)
+        cell = t.rows[0].cells[i]; cell.text = ""; para = cell.paragraphs[0]; r = para.add_run(h); _set_font(r, HEAD_FONT, 9, bold=True, color=INK)
+        if numeric_col[i]: para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+        tcPr = cell._tc.get_or_add_tcPr(); cb = OxmlElement("w:tcBorders"); _borders(cb, {"bottom": ("single", 8)}); tcPr.append(cb)
     for row in rows:
         cells = t.add_row().cells
         for i, v in enumerate(row):
-            cells[i].text = ""; r = cells[i].paragraphs[0].add_run(str(v)); r.font.size = Pt(9)
+            cells[i].text = ""; para = cells[i].paragraphs[0]; r = para.add_run(str(v)); _set_font(r, BODY_FONT, 9.5, color=INK)
+            if numeric_col[i]: para.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    for row in t.rows:
+        for cell in row.cells:
+            for para in cell.paragraphs: para.paragraph_format.space_after = Pt(2); para.paragraph_format.line_spacing = 1.15
     doc.add_paragraph()
 def suspicion(n, title, trigger, test, result, verdict, cost):
     h3(f"Suspicion {n}: \"{title}\"")
@@ -75,7 +117,7 @@ def suspicion(n, title, trigger, test, result, verdict, cost):
 
 # ============================== TITLE ==============================
 doc.add_heading("Eval-awareness probes are not deployable monitors", level=0)
-sub = doc.add_paragraph(); r = sub.add_run("The published headline was a corpus detector. At a 1% base rate the honest probe raises four false alarms per catch."); r.bold = True; r.font.size = Pt(13)
+sub = doc.add_paragraph(); r = sub.add_run("The published headline was a corpus detector. At a 1% base rate the honest probe raises four false alarms per catch."); _set_font(r, HEAD_FONT, 13, bold=False, color=SUPPORT)
 para("Crish Nagarkar · MATS Winter 2027 (Neel Nanda stream)")
 para("Code: [GitHub URL goes here. Repo is committed locally at `interp/evalaware`, `data/` excluded per the dataset licence. Push, then paste the link.]")
 para("**Epistemic status.** Every headline number was recomputed from raw data by hand; the checklist is `VERIFY_CRISH.md` in the repo and the verification log is at the end of this document. "
