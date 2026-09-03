@@ -365,8 +365,10 @@ para("Eight suspicions. Three confirmed outright (1, 7, 8), one split down the m
 body = doc.element.body; removed = 0
 for para in list(body.iterchildren(qn("w:p"))):
     if not para.xpath(".//w:t/text()") and not para.xpath(".//w:drawing"):
-        prev = para.getprevious()
-        if prev is not None and prev.tag == qn("w:tbl"):
-            continue
+        nxt = para.getnext()
+        if para.getprevious() is not None and para.getprevious().tag == qn("w:tbl") and nxt is not None and nxt.tag == qn("w:p"):
+            pPr = nxt.get_or_add_pPr(); sp = pPr.find(qn("w:spacing"))
+            if sp is None: sp = OxmlElement("w:spacing"); pPr.append(sp)
+            sp.set(qn("w:before"), "200")                      # 10pt before the paragraph that follows a table
         body.remove(para); removed += 1
 doc.save(OUT); print("saved", OUT, "| empty paragraphs removed:", removed)
