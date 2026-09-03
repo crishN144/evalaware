@@ -35,9 +35,10 @@ FIG = "/mnt/scratch/bgxp240/interp/evalaware/figures/"
 OUT = "/mnt/scratch/bgxp240/interp/evalaware/WRITEUP_v4.docx"
 
 doc = Document()
-st = doc.styles["Normal"]; _set_font(st, BODY_FONT, 11, color=INK); st.paragraph_format.line_spacing = 1.4; st.paragraph_format.space_after = Pt(8)
+for sec in doc.sections: sec.left_margin = sec.right_margin = sec.top_margin = sec.bottom_margin = Inches(1.0)
+st = doc.styles["Normal"]; _set_font(st, BODY_FONT, 11, color=INK); st.paragraph_format.line_spacing = 1.15; st.paragraph_format.space_after = Pt(10)
 for name, size in [("Title", 24), ("Heading 1", 17), ("Heading 2", 13.5), ("Heading 3", 11.5)]:
-    hs = doc.styles[name]; _set_font(hs, HEAD_FONT, size, bold=True, color=SLATE); hs.paragraph_format.space_before = Pt(18 if name != "Title" else 0); hs.paragraph_format.space_after = Pt(6)
+    hs = doc.styles[name]; _set_font(hs, HEAD_FONT, size, bold=True, color=SLATE); hs.paragraph_format.space_before = Pt(18 if name != "Title" else 0); hs.paragraph_format.space_after = Pt(6); hs.paragraph_format.keep_with_next = True
     if name == "Title":
         b = hs.element.pPr.find(qn("w:pBdr"))
         if b is not None: hs.element.pPr.remove(b)
@@ -75,8 +76,8 @@ def numbered(t): add_rich(doc.add_paragraph(style="List Number"), t)
 def code(t):
     p = doc.add_paragraph(); r = p.add_run(t); _set_font(r, MONO_FONT, 9); p.paragraph_format.line_spacing = 1.25
     p.paragraph_format.left_indent = Inches(0.3); p.paragraph_format.space_after = Pt(6)
-def img(name, caption, width=6.3):
-    p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+def img(name, caption, width=6.5):
+    p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER; p.paragraph_format.keep_with_next = True; p.paragraph_format.space_after = Pt(4)
     p.add_run().add_picture(FIG + name, width=Inches(width))
     c = doc.add_paragraph(); add_rich(c, caption)
     for run in c.runs: run.font.size = Pt(9.5); run.italic = True; run.font.color.rgb = SUPPORT
@@ -105,7 +106,7 @@ def table(header, rows):
     for row in t.rows:
         for cell in row.cells:
             for para in cell.paragraphs: para.paragraph_format.space_after = Pt(2); para.paragraph_format.line_spacing = 1.15
-    doc.add_paragraph()
+    doc.add_paragraph().paragraph_format.space_after = Pt(0)   # table spacer, removed by the final sweep
 def suspicion(n, title, trigger, test, result, verdict, cost):
     h3(f"Suspicion {n}: \"{title}\"")
     for lab, val in [("Trigger", trigger), ("Cheapest test", test), ("Result", result), ("Verdict", verdict), ("Cost", cost)]:
@@ -360,4 +361,12 @@ suspicion(8, "the agent's numbers are wrong",
 h2("Bottom line")
 para("Eight suspicions. Three confirmed outright (1, 7, 8), one split down the middle (2: rejected corpus-wide, confirmed inside aider), four rejected (3, 4, 5, 6). The two that changed the document most were the two rejections that cost the most: the transplant, which turned an adjudication into an elimination, and the base-rate arithmetic, which turned a data critique into a claim about a proposed safety technique. Still to do before submission: push the repo and paste the link, Toggl screenshot, fill the tags line.")
 
-doc.save(OUT); print("saved", OUT)
+# final sweep: no empty paragraphs anywhere (spacing lives in the styles); keep the one right after a table so tables do not merge
+body = doc.element.body; removed = 0
+for para in list(body.iterchildren(qn("w:p"))):
+    if not para.xpath(".//w:t/text()") and not para.xpath(".//w:drawing"):
+        prev = para.getprevious()
+        if prev is not None and prev.tag == qn("w:tbl"):
+            continue
+        body.remove(para); removed += 1
+doc.save(OUT); print("saved", OUT, "| empty paragraphs removed:", removed)
