@@ -282,7 +282,7 @@ numbered("smolagents is the only clean mixed family and its estimate does not cl
 numbered("The transplant swaps only the system turn, at one layer per model. It refutes C2. It does not prove C3, which rests on my reading.")
 numbered("Transcripts truncate at 4096 tokens. 31% of rows lose their middle.")
 numbered("The frontier black-box scores are the benchmark paper's released judgments, not my re-runs.")
-numbered("Two self-corrections from verification are folded in above: the honest floor across all 28 configurations is 0.465, and my \"18 judges\" tally counted three non-independent entries.")
+numbered("Three numbers here differ from what the pipeline first produced, because I checked: the honest floor across all 28 configurations is 0.465, not 0.67; the \"18 judges\" tally counted three non-independent entries; and the first transplant CI run printed an upper bound below the point estimate, an unpacking bug caught by reading the numbers. None moves a conclusion. All three are in VERIFY_CRISH.md.")
 
 # ============================= LOG BOOK ============================
 h1("Log Book")

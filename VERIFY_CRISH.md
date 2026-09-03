@@ -10,6 +10,15 @@ The command blocks were drafted with Claude Code against the pipeline it wrote; 
 them in instruction form so anyone can re-run them. The runs, the observed numbers, the
 reading, the corrections and the verdicts are mine.
 
+**Three numbers in this project are different from what the pipeline first produced,
+because I checked.** The honest floor across all 28 configurations is 0.465, not the 0.67
+the first draft claimed (Claim 2). The "18 independent judges" on the prompt_injection
+inversion counted two leaky-CV probes and a derived human mean, so the honest count is
+about 15 (Claim 4). And the first bootstrap-CI run for the transplant printed an upper
+bound below the point estimate, because the (mean, lo, hi) tuple had been unpacked as
+(lo, hi); it was caught by reading the numbers and fixed before it reached a figure
+(Summary). None of the three moves a conclusion. All three moved text.
+
 Setup, once per shell:
 
     source /mnt/scratch/bgxp240/interp/activate.sh
