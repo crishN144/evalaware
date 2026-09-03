@@ -130,17 +130,13 @@ doc.add_heading("Eval-awareness probes are not deployable monitors", level=0)
 sub = doc.add_paragraph(); r = sub.add_run("The published headline was a corpus detector. At a 1% base rate the honest probe raises four false alarms per catch."); _set_font(r, HEAD_FONT, 13, bold=False, color=SUPPORT)
 para("Crish Nagarkar · MATS Winter 2027 (Neel Nanda stream)")
 para("Code: [GitHub URL goes here. Repo is committed locally at `interp/evalaware`, `data/` excluded per the dataset licence. Push, then paste the link.]")
-para("**Epistemic status.** Every headline number was recomputed from raw data by hand; the checklist is `VERIFY_CRISH.md` in the repo and the verification log is at the end of this document. "
-     "I am confident in the leakage result: it is a within-dataset contrast, same probe, same layer, same corpus, only the split changes. "
-     "I am confident in the base-rate arithmetic, which I checked by hand. "
-     "The honest AUROC is a range: 0.67 to 0.74 across sensible readouts, 0.465 to 0.743 across all 28 configurations. "
-     "I am less confident about *why* the prompt_injection family inverts. Two mechanisms are refuted by experiment; the survivor rests on my reading of 34 transcripts, not on a computation. Two models, one benchmark.")
+para("**Epistemic status:** every headline number recomputed from raw data by hand; checklist in the repo. Two models, one benchmark.")
 para("**Time:** [X.X] hours (Toggl screenshot at the top of the Log Book).")
 
 # ============================ EXEC SUMMARY =========================
 h1("Executive Summary")
 para("Eval-awareness is a model noticing it is being tested. Nguyen et al. showed a linear probe can read it from the residual stream and proposed running one as a live monitor over deployment traffic. "
-     "That proposal is what I test. A monitor lives where evals are rare, so I score everything at a 1% base rate. "
+     "That proposal is what I test. I started here because their §4.2.2 names the confound, \"test-classified prompts often contain more structured or formatted elements\", and then moves on. A monitor lives where evals are rare, so I score everything at a 1% base rate. "
      "Models: Qwen3-4B and 8B. Data: the one benchmark of real transcripts, "
      "[jjpn2/eval_awareness](https://huggingface.co/datasets/jjpn2/eval_awareness), 976 rows from 60 sources. "
      "**Honest** below means leave-one-family-out: no source shared between train and test. "
@@ -151,6 +147,7 @@ bullet("**The headline number is leakage.** The naive probe scores 0.956. But 0 
 bullet("**A quarter of the AUROC was never real.** Hold out whole source families and the probe falls from 0.956 to 0.714 on 4B and 0.668 on 8B. I recomputed this from raw activations.")
 bullet("**On the only fair footing the probe loses to prompting.** On an unseen source the honest probe (0.714) sits below every frontier model prompted zero-shot on the same rows (0.717 to 0.820) and far below the humans (0.913).")
 bullet("**Scaling does not help.** 8B looks better on the leaky metric and worse on the honest one. Intervals overlap, so that is all I claim.")
+para("**Epistemic status.** I am confident in the leakage result: it is a within-dataset contrast, same probe, same layer, same corpus, only the split changes. I am confident in the base-rate arithmetic, which I checked by hand. The honest AUROC is a range: 0.67 to 0.74 across sensible readouts, 0.465 to 0.743 across all 28 configurations. I am less confident about *why* the prompt_injection family inverts. Two mechanisms are refuted by experiment; the survivor rests on my reading of 34 transcripts, not on a computation.")
 
 h2("Experiment 1: Would it work as a monitor?")
 para("Take the honest scores, budget 1% false positives, and ask what a flag is worth as evals get rarer. At 1% prevalence precision is 0.185. It crosses one-false-alarm-per-catch only above 4% prevalence.")
