@@ -203,18 +203,19 @@ def fig_f(c):
         else:
             rows.append((f, p[fam == f].mean(), None))
     rows.sort(key=lambda r: r[1])
-    fig, ax = _fig(9, 10.8); fig.subplots_adjust(top=0.91, bottom=0.06, left=0.30, right=0.96)
+    fig, ax = _fig(9, 10.8); fig.subplots_adjust(top=0.905, bottom=0.06, left=0.30, right=0.96)
     ys = np.arange(len(rows)); focal = [r[2] is not None for r in rows]
     cols = [SLATE if r[2] == "eval" else (SAND if r[2] == "deploy" else EDGE) for r in rows]
     ax.barh(ys, [r[1] for r in rows], color=cols, edgecolor=[INK if fc else "none"[:0] or EDGE for fc in focal], linewidth=[1.3 if fc else 0.3 for fc in focal], zorder=3)
     shown = set(range(6)) | set(range(len(rows) - 6, len(rows))) | {i for i, fc in enumerate(focal) if fc}
     ax.set_yticks(ys); ax.set_yticklabels([r[0] if i in shown else "" for i, r in enumerate(rows)], fontsize=9)
     for i, r in enumerate(rows):
-        if r[2] == "deploy": ax.annotate("hackaprompt, labelled DEPLOY, scores 0.83", (r[1], i), (r[1] - 0.02, i + 4.5), ha="right", va="center", arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
-        if r[2] == "eval": ax.annotate("mosscap/gandalf, labelled EVAL, score 0.56", (r[1], i), (r[1] + 0.03, i - 4.5), ha="left", va="center", arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
+        if r[2] == "deploy": ax.annotate("hackaprompt, labelled DEPLOY, scores 0.83", (r[1], i), (r[1] - 0.02, i + 4.5), ha="right", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
+        if r[2] == "eval": ax.annotate("mosscap/gandalf, labelled EVAL, score 0.56", (r[1], i), (r[1] + 0.03, i - 4.5), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
     ax.axvline(0.5, color=DEEMPH, ls=":", lw=0.9); ax.text(0.5, len(rows) + 0.3, "chance", ha="center", va="bottom", color=DEEMPH, fontsize=10)
     ax.set_xlim(0, 1.0); ax.set_ylim(-0.8, len(rows) + 1.2); ax.set_xlabel("mean honest P(eval), Qwen3-4B"); _xgrid(ax)
-    _title(ax, "The deploy-labelled hackaprompt rows score higher than most eval-labelled families", "all 47 source families, sorted; grey = every family that is not prompt_injection")
+    fig.text(0.30, 0.955, "The deploy-labelled hackaprompt rows score higher than most eval-labelled families", fontsize=15, fontweight="bold", color=INK, va="bottom")
+    fig.text(0.30, 0.935, "all 47 source families, sorted; grey = every family that is not prompt_injection", fontsize=11, color=SUPPORT, va="bottom")
     _save(fig, "pub_f_per_family")
 
 # ------------------------------------------------------------------ G
