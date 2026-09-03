@@ -103,15 +103,15 @@ para("One family, prompt_injection, scores below chance. So do all nine frontier
 
 h2("Experiment 1: Would it work as a monitor?")
 para("Take the honest scores, budget 1% false positives, and ask what a flag is worth as evals get rarer. At 1% prevalence precision is 0.19. It crosses one-false-alarm-per-catch only above 4% prevalence.")
-img("pub_c_precision_vs_base_rate.png", "Fig 1. Precision of a flag against base rate. Blue is the honest probe, red is what the leaky evaluation promised. The 1% column is where a monitor lives.")
+img("pub_c_precision_vs_base_rate.png", "Fig 1. Precision of a flag against base rate. Slate is the honest probe, crimson is what the leaky evaluation promised. The 1% column is where a monitor lives.")
 
 h2("Experiment 2: Why did the headline look good?")
 para("No source category mixes labels, so provenance determines the label and a random split is a corpus-recognition test. Word counts alone reach 0.936.")
-img("pub_a_leaky_vs_honest.png", "Fig 2. Same probe, same layer, same corpus; only the split changes. Red is the number that is not real. Grey dashed is TF-IDF with no model. Bootstrap 95% intervals.")
+img("pub_a_leaky_vs_honest.png", "Fig 2. Same probe, same layer, same corpus; only the split changes. Crimson is the number that is not real. Grey dashed is TF-IDF with no model. Bootstrap 95% intervals.")
 
 h2("Experiment 3: What survives, and does scale help?")
 para("Across 28 layer and pooling configurations the honest number stays between 0.67 and 0.74. Both models peak late. The bigger model is worse on every honest comparison.")
-img("pub_b_by_layer.png", "Fig 3. Leaky (red) against honest (blue) at every layer. The gap never closes. 8B's honest curve sits below 4B's.")
+img("pub_b_by_layer.png", "Fig 3. Leaky (crimson) against honest (slate) at every layer. The gap never closes. 8B's honest curve sits below 4B's.")
 
 h2("Experiment 4: The family the probe gets backwards")
 para("prompt_injection inverts for the probe, for nine frontier models, and for one of the two human annotators. Swapping the system prompts across the label boundary makes the inversion worse rather than curing it, so the signal is in the user turns. The label, not the probe, is what is wrong here.")
@@ -180,7 +180,7 @@ bullet("Both models peak late. 4B's best honest layer is 34 of 36, relative dept
 bullet("Scale: 0.714 to 0.668 at the reported layers, 0.743 to 0.730 at each readout's best. The intervals, 0.68 to 0.75 and 0.63 to 0.70, overlap at the edges.")
 bullet("The random-direction floor is 0.50 ± 0.07 with a folded 95th percentile of 0.64. The honest corpus-wide number clears it. The smolagents in-family number, 0.63, does not clearly clear it. That is why I call smolagents an indication and never a value.")
 para("On the only footing shared with the benchmark paper, an unseen source, the probe loses to every prompted frontier model. The \"white-box beats black-box\" story only survives if you quote the leaky number.")
-img("pub_d_vs_blackbox.png", "Fig 6. Amber: nine frontier models prompted zero-shot, from the benchmark paper's released judgments, on the 858 shared rows. Blue line: the honest probe. Red line: the leaky one. Green: the human annotators.")
+img("pub_d_vs_blackbox.png", "Fig 6. Amber: nine frontier models prompted zero-shot, from the benchmark paper's released judgments, on the 858 shared rows. Slate line: the honest probe. Crimson line: the leaky one. Sage: the human annotators.")
 para("Two more generalisation checks, both cheap. Train on chat rows and test on agentic rows, then the reverse:")
 table(["", "chat → agentic", "agentic → chat", "honest, chat rows only", "honest, agentic rows only"],
       [["Qwen3-4B", "0.741", "0.537", "0.616", "0.706"], ["Qwen3-8B", "0.490", "0.473", "0.595", "0.575"]])
@@ -196,7 +196,7 @@ bullet("**C2, system-prompt shift.** All 37 eval rows share \"The secret passwor
 bullet("**C3, the label encodes provenance.** \"Deploy\" for hackaprompt means \"a member of the public typed this into a competition\". Only C3 also explains the black-box judges.")
 h3("The judges")
 para("Nine of nine frontier models invert on these rows. GPT-4o scores 0.10. One of the two dataset annotators inverts too: 0.91 against 0.35, and their in-family correlation is −0.24 against +0.77 corpus-wide. No probe artefact reaches into an API.")
-img("pub_g_annotators.png", "Fig 9. Annotator 1 against annotator 2 for all 976 rows. Corpus-wide they agree. Inside prompt_injection they rank the rows in opposite orders, and both put the deploy-labelled hackaprompt rows (red squares) near 0.8.")
+img("pub_g_annotators.png", "Fig 9. Annotator 1 against annotator 2 for all 976 rows. Corpus-wide they agree. Inside prompt_injection they rank the rows in opposite orders, and both put the deploy-labelled hackaprompt rows (sand squares) near 0.8.")
 h3("The transplant")
 para("Same 56 rows. User turns untouched. System prompts swapped across the label boundary, in four conditions, scored by the same probe fit on the other 46 families. Re-extracting the unchanged rows reproduces the cached score to 0.004 on both models, which is the check I ran before believing anything else.")
 table(["condition", "4B AUROC", "4B P(eval), eval / deploy rows", "8B AUROC", "8B P(eval), eval / deploy rows"],
