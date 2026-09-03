@@ -35,20 +35,32 @@ evalaware/          the package
   transplant.py       system-prompt transplant on the 56 prompt_injection rows (C2 test)
   extra_experiments.py probe vs just-ask, cross-regime transfer, random-direction floor
   sensitivity.py      28-config sweep: 7 layers x 2 poolings x 2 models
-  pub_figures.py      the 12 figures, one colour system, captions live in the write-up
+  honest_reliability.py  base-rate reliability computed on held-out-family scores only
+  mixed.py            within-family scoring for the three label-mixed families
+  transplant_ci.py    bootstrap CIs for the four transplant conditions
+  lock_metrics.py     freezes the headline numbers + CIs into artifacts/ as the source of truth
+  config.py           paths, layer list, seeds, model ids
+  pub_figures.py      the 12 publication figures, one colour system, captions in the write-up
+  figures.py          earlier diagnostic figures, still emitted by run.py --stage all
   run.py              the staged pipeline
 tests/              32 CPU tests + 2 GPU tests; pin fold-internal scaling, the shuffled-label
                     null, the annotator column mapping, the nnsight output shape
 artifacts/          every cached metric as JSON (activations are not committed, see below)
 figures/            pub_*.png
-job_*.sh            SLURM scripts for the GPU stages
+job_*.sh            SLURM scripts for the GPU stages (cluster-specific paths inside)
+run_lock.sh         re-lock the headline metrics
+run_sens.sh         drive the 28-config sensitivity sweep
+VERIFY.md           the raw verification transcript behind VERIFY_CRISH.md
 build_writeup_v5.py the write-up as a docx, built from these artifacts
 ```
 
 ## Reproduce
 
 ```
-source /mnt/scratch/bgxp240/interp/activate.sh      # the default conda env has no sklearn
+# Any env with torch, nnsight, transformers, scikit-learn, numpy, matplotlib.
+# On the machine this was built on that is:
+source /mnt/scratch/bgxp240/interp/activate.sh      # cluster-specific; the default conda env has no sklearn
+export OMP_NUM_THREADS=1                            # see the footgun note below
 python -m pytest -q -m "not gpu"                     # 32 passed, ~15 s
 ```
 
