@@ -75,11 +75,12 @@ def bullet(t): add_rich(doc.add_paragraph(style="List Bullet"), t)
 def bullet2(t): add_rich(doc.add_paragraph(style="List Bullet 2"), t)
 def numbered(t): add_rich(doc.add_paragraph(style="List Number"), t)
 def code(t):
-    lines = t.split("\n")
+    lines = t.split("\n"); gap = False
     for i, line in enumerate(lines):
-        p = doc.add_paragraph(); r = p.add_run(line if line else " "); _set_font(r, MONO_FONT, 9.5)
+        if not line.strip(): gap = True; continue            # blank source lines become spacing, not empty paragraphs
+        p = doc.add_paragraph(); r = p.add_run(line); _set_font(r, MONO_FONT, 9.5)
         pf = p.paragraph_format; pf.left_indent = Inches(0.3); pf.right_indent = Inches(0.3); pf.line_spacing = 1.2
-        pf.space_before = Pt(6 if i == 0 else 0); pf.space_after = Pt(8 if i == len(lines) - 1 else 0); pf.keep_with_next = i < len(lines) - 1
+        pf.space_before = Pt(6 if i == 0 else (8 if gap else 0)); pf.space_after = Pt(8 if i == len(lines) - 1 else 0); pf.keep_with_next = i < len(lines) - 1; gap = False
         pPr = p._p.get_or_add_pPr(); shd = OxmlElement("w:shd"); shd.set(qn("w:val"), "clear"); shd.set(qn("w:color"), "auto"); shd.set(qn("w:fill"), "F2EDE4"); pPr.append(shd)
 def _unused_code(t):
     p = doc.add_paragraph(); r = p.add_run(t); _set_font(r, MONO_FONT, 9); p.paragraph_format.line_spacing = 1.25
