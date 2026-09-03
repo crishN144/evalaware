@@ -132,7 +132,7 @@ def suspicion(n, title, trigger, test, result, verdict, cost, stray=None):
 doc.add_heading("Eval-awareness probes are not deployable monitors", level=0)
 sub = doc.add_paragraph(); r = sub.add_run("The published headline was a corpus detector. At a 1% base rate the honest probe raises four false alarms per catch."); _set_font(r, HEAD_FONT, 13, bold=False, color=SUPPORT)
 para("Crish Nagarkar · MATS Winter 2027 (Neel Nanda stream)")
-para("Code: [GitHub URL goes here. Repo is committed locally at `interp/evalaware`, `data/` excluded per the dataset licence. Push, then paste the link.]")
+para("Code: [github.com/crishN144/evalaware](https://github.com/crishN144/evalaware)")
 para("**Epistemic status:** every headline number recomputed from raw data by hand; checklist in the repo. Two models, one benchmark.")
 para("**Time:** about 15 hours. An estimate, not a tracked figure: no timer was running. It is built from the per-step costs in the Log Book (about 9 hours of experiments and verification) plus the write-up and figure rounds, and cross-checked against file and commit timestamps.")
 
