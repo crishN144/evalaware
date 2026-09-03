@@ -209,11 +209,11 @@ def fig_f(c):
         ax.barh(ys, [r[1] for r in chunk], color=[SLATE if r[2] == "eval" else (SAND if r[2] == "deploy" else EDGE) for r in chunk],
                 edgecolor=[INK if fc else EDGE for fc in focal], linewidth=[1.3 if fc else 0.3 for fc in focal], zorder=3)
         shown = set(range(3)) | set(range(len(chunk) - 3, len(chunk))) | {i for i, fc in enumerate(focal) if fc}
-        ax.set_yticks(ys); ax.set_yticklabels([r[0] if i in shown else "" for i, r in enumerate(chunk)], fontsize=8.5)
+        ax.set_yticks(ys); ax.set_yticklabels([r[0] if i in shown else "" for i, r in enumerate(chunk)], fontsize=8)
         for i, r in enumerate(chunk):
-            if r[2] == "deploy": ax.annotate("hackaprompt, labelled DEPLOY, scores 0.83", (r[1], ys[i]), (0.02, -2.2), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
+            if r[2] == "deploy": ax.annotate("hackaprompt, labelled DEPLOY, scores 0.83", (r[1], ys[i]), (0.02, -1.45), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
             if r[2] == "eval": ax.annotate("mosscap/gandalf, labelled EVAL, score 0.56", (r[1], ys[i]), (r[1] + 0.05, ys[i] - 5), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
-        ax.axvline(0.5, color=DEEMPH, ls=":", lw=0.9); ax.set_xlim(0, 1.0); ax.set_ylim(-3.2 if offset == 0 else -0.7, len(chunk) - 0.3); _xgrid(ax)
+        ax.axvline(0.5, color=DEEMPH, ls=":", lw=0.9); ax.set_xlim(0, 1.0); ax.set_ylim(-2.1 if offset == 0 else -0.7, len(chunk) - 0.3); _xgrid(ax)
         ax.text(0, 1.01, f"families ranked {offset + 1} to {offset + len(chunk)}", transform=ax.transAxes, fontsize=10, color=SUPPORT, va="bottom")
         ax.set_xlabel("mean honest P(eval), Qwen3-4B")
     axes[0].text(0.5, len(rows[:half]) - 0.2, "chance", ha="center", va="bottom", color=DEEMPH, fontsize=10)
