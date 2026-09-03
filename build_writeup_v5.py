@@ -140,7 +140,7 @@ para("Eval-awareness is a model noticing it is being tested. Nguyen et al. showe
      "Models: Qwen3-4B and 8B. Data: the one benchmark of real transcripts, "
      "[jjpn2/eval_awareness](https://huggingface.co/datasets/jjpn2/eval_awareness), 976 rows from 60 sources. "
      "**Honest** below means leave-one-family-out: no source shared between train and test. "
-     "The monitor fails. The number that made it look viable was a corpus detector.")
+     "The monitor fails.")
 para("**Key takeaways**")
 bullet("**Not a monitor.** At a 1% false-positive budget the honest probe catches one eval in five. Over 10,000 transcripts that is 20 catches and 90 false alarms. Four wrong flags per right one.")
 bullet("**The headline number is leakage.** The naive probe scores 0.956. But 0 of 60 source datasets mix labels, so random CV rewards recognising the corpus. A bag of words with no model scores 0.936.")
@@ -158,13 +158,13 @@ para("No source category mixes labels, so a random split is a corpus-recognition
 img("pub_a_leaky_vs_honest.png", "Fig 2. Only the split changes. Crimson is the number that is not real; grey dashed is TF-IDF with no model.")
 
 h2("Experiment 3: What survives an honest split")
-para("Across 28 layer and pooling configurations the honest number stays between 0.67 and 0.74. Both models peak late. The bigger model is worse on every honest comparison, which corroborates Manek (2606.29196), who put Qwen back into the scaling analysis and found the signal's depth shifts with scale.")
+para("Across 28 layer and pooling configurations the honest number stays between 0.67 and 0.74. Both models peak late. The bigger model is worse on every honest comparison, which corroborates Manek (2606.29196), who put Qwen back into the scaling analysis.")
 img("pub_b_by_layer.png", "Fig 3. Leaky (crimson) against honest (slate) at every layer. The gap never closes.")
 
 h2("Experiment 4: The prompt_injection inversion")
-para("prompt_injection inverts for the probe, for nine frontier models, and for one of the two annotators. Swapping the system prompts makes it worse, so the signal is in the user turns. I read all 19 deploy-labelled transcripts and 15 eval-labelled ones myself: the \"deploy\" side is people typing \"I have been PWNED\" in homoglyphs and Cyrillic for a competition scoreboard. The label, not the probe, is wrong.")
+para("prompt_injection inverts for the probe, nine frontier models, and one of the two annotators. Swapping the system prompts makes it worse, so the signal is in the user turns. I read all 19 deploy-labelled transcripts and 15 eval-labelled ones myself: the \"deploy\" side is people typing \"I have been PWNED\" in homoglyphs and Cyrillic for a competition scoreboard. The label, not the probe, is wrong.")
 
-para("None of this says eval-awareness is absent from Qwen3's residual stream. It says this probe, on this benchmark, cannot show it at monitor-grade reliability.")
+para("None of this says eval-awareness is absent from Qwen3. It says this probe, on this benchmark, cannot show it at monitor-grade reliability.")
 
 # ======================= RANDOM EXAMPLES ===========================
 h1("Randomly-Selected Examples")
