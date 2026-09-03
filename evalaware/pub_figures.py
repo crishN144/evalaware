@@ -211,14 +211,14 @@ def fig_f(c):
         shown = set(range(3)) | set(range(len(chunk) - 3, len(chunk))) | {i for i, fc in enumerate(focal) if fc}
         ax.set_yticks(ys); ax.set_yticklabels([r[0] if i in shown else "" for i, r in enumerate(chunk)], fontsize=8.5)
         for i, r in enumerate(chunk):
-            if r[2] == "deploy": ax.annotate("hackaprompt, labelled DEPLOY, scores 0.83", (r[1], ys[i]), (r[1] - 0.6, ys[i] - 5), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
+            if r[2] == "deploy": ax.annotate("hackaprompt, labelled DEPLOY, scores 0.83", (r[1], ys[i]), (0.02, -2.2), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
             if r[2] == "eval": ax.annotate("mosscap/gandalf, labelled EVAL, score 0.56", (r[1], ys[i]), (r[1] + 0.05, ys[i] - 5), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
-        ax.axvline(0.5, color=DEEMPH, ls=":", lw=0.9); ax.set_xlim(0, 1.0); ax.set_ylim(-0.7, len(chunk) - 0.3); _xgrid(ax)
+        ax.axvline(0.5, color=DEEMPH, ls=":", lw=0.9); ax.set_xlim(0, 1.0); ax.set_ylim(-3.2 if offset == 0 else -0.7, len(chunk) - 0.3); _xgrid(ax)
         ax.text(0, 1.01, f"families ranked {offset + 1} to {offset + len(chunk)}", transform=ax.transAxes, fontsize=10, color=SUPPORT, va="bottom")
         ax.set_xlabel("mean honest P(eval), Qwen3-4B")
     axes[0].text(0.5, len(rows[:half]) - 0.2, "chance", ha="center", va="bottom", color=DEEMPH, fontsize=10)
     fig.text(0.2, 0.97, "The deploy-labelled hackaprompt rows score higher than most eval-labelled families", fontsize=15, fontweight="bold", color=INK, va="bottom")
-    fig.text(0.2, 0.915, "all 47 source families, sorted; grey = every family that is not prompt_injection", fontsize=11, color=SUPPORT, va="bottom")
+    fig.text(0.2, 0.915, "47 source families with prompt_injection split into its two sides (48 bars), sorted; grey = every bar that is not prompt_injection", fontsize=11, color=SUPPORT, va="bottom")
     _save(fig, "pub_f_per_family")
 
 # ------------------------------------------------------------------ G
