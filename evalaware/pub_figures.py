@@ -328,7 +328,7 @@ def fig_k(c):
         vals, counts = np.unique(cat[mask], return_counts=True); order = np.argsort(-counts)[:k]
         return ", ".join(f"{vals[i]} ({counts[i]})" for i in order)
     ax.text(0.015, 0.995, f"probe says eval, humans say deploy\nn = {int(tl.sum())}, mostly {top_cats(tl)}", ha="left", va="top", bbox=BOX, **ANN)
-    ax.annotate(f"humans say eval, probe says deploy\nn = {int(br.sum())}, mostly {top_cats(br)}", (0.70, 0.12), (0.33, 0.12), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7), **ANN)
+    ax.annotate(f"humans say eval,\nprobe says deploy\nn = {int(br.sum())}, mostly\n{top_cats(br).replace(', ', chr(10))}", (0.70, 0.11), (0.30, 0.11), ha="left", va="center", bbox=BOX, arrowprops=dict(arrowstyle="-", color=SUPPORT, lw=0.7, shrinkB=0), **ANN)
     # background rows, faded; prompt_injection rows, filled by their label
     ax.scatter(hm[(c.y == 1) & ~m], p[(c.y == 1) & ~m], s=9, color=SLATE, alpha=0.28, linewidth=0, label="eval-labelled (other families)")
     ax.scatter(hm[(c.y == 0) & ~m], p[(c.y == 0) & ~m], s=9, color=SAND_DK, alpha=0.35, linewidth=0, label="deploy-labelled (other families)")
