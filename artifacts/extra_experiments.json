@@ -1,0 +1,114 @@
+{
+  "Qwen3-4B": {
+    "layer": 34,
+    "internal_vs_verbal": {
+      "spearman_rho": 0.12499219936215714,
+      "just_ask_frac_says_eval_at_0.5": 0.875,
+      "just_ask_frac_says_eval_on_deploy_rows": 0.8633257403189066,
+      "median_split": {
+        "probe_eval_model_eval": 281,
+        "probe_eval_model_deploy": 207,
+        "probe_deploy_model_eval": 219,
+        "probe_deploy_model_deploy": 269,
+        "disagreement_rate": 0.4364754098360656
+      },
+      "at_0.5": {
+        "probe_eval_model_eval": 543,
+        "probe_eval_model_deploy": 76,
+        "probe_deploy_model_eval": 311,
+        "probe_deploy_model_deploy": 46,
+        "disagreement_rate": 0.39651639344262296
+      },
+      "auroc_probe_honest": 0.7139406048111714,
+      "auroc_just_ask": 0.5748866350220367,
+      "auroc_on_rows_where_model_says_deploy": 0.6983870967741935,
+      "n_rows_model_says_deploy": 122
+    },
+    "cross_regime": {
+      "train_chat_test_agentic": {
+        "auroc": 0.7408495575221239,
+        "n_train": 500,
+        "n_test": 476,
+        "test_pos_rate": 0.5252100840336135
+      },
+      "train_agentic_test_chat": {
+        "auroc": 0.5365690075411821,
+        "n_train": 476,
+        "n_test": 500,
+        "test_pos_rate": 0.574
+      },
+      "lofo_within_chat": {
+        "auroc": 0.6847180644844677,
+        "n": 500
+      },
+      "lofo_within_agentic": {
+        "auroc": 0.7415221238938053,
+        "n": 476
+      }
+    },
+    "random_direction": {
+      "n_draws": 200,
+      "mean_auroc": 0.503626237046275,
+      "sd": 0.07318906512059419,
+      "mean_abs_dev_from_chance": 0.06033693471280165,
+      "max_abs_dev": 0.21014197664405732,
+      "p95_folded": 0.6418349643467675
+    }
+  },
+  "Qwen3-8B": {
+    "layer": 35,
+    "internal_vs_verbal": {
+      "spearman_rho": 0.16068437451403525,
+      "just_ask_frac_says_eval_at_0.5": 0.7612704918032787,
+      "just_ask_frac_says_eval_on_deploy_rows": 0.7494305239179955,
+      "median_split": {
+        "probe_eval_model_eval": 279,
+        "probe_eval_model_deploy": 209,
+        "probe_deploy_model_eval": 212,
+        "probe_deploy_model_deploy": 276,
+        "disagreement_rate": 0.43135245901639346
+      },
+      "at_0.5": {
+        "probe_eval_model_eval": 423,
+        "probe_eval_model_deploy": 140,
+        "probe_deploy_model_eval": 320,
+        "probe_deploy_model_deploy": 93,
+        "disagreement_rate": 0.4713114754098361
+      },
+      "auroc_probe_honest": 0.6682616238870296,
+      "auroc_just_ask": 0.6071717930118816,
+      "auroc_on_rows_where_model_says_deploy": 0.6162601626016259,
+      "n_rows_model_says_deploy": 233
+    },
+    "cross_regime": {
+      "train_chat_test_agentic": {
+        "auroc": 0.489716814159292,
+        "n_train": 500,
+        "n_test": 476,
+        "test_pos_rate": 0.5252100840336135
+      },
+      "train_agentic_test_chat": {
+        "auroc": 0.4729024553827027,
+        "n_train": 476,
+        "n_test": 500,
+        "test_pos_rate": 0.574
+      },
+      "lofo_within_chat": {
+        "auroc": 0.6439531497930674,
+        "n": 500
+      },
+      "lofo_within_agentic": {
+        "auroc": 0.691716814159292,
+        "n": 476
+      }
+    },
+    "random_direction": {
+      "n_draws": 200,
+      "mean_auroc": 0.4972215717964054,
+      "sd": 0.08207296849431019,
+      "mean_abs_dev_from_chance": 0.06886808940244249,
+      "max_abs_dev": 0.19177875907237962,
+      "p95_folded": 0.6515289955587228
+    }
+  }
+}

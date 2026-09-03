@@ -88,3 +88,15 @@ comparison, so `tests/test_compare_blackbox.py` asserts it.
     sensitivity.py       layer x pooling sweep               -> sensitivity.json
     final_figures.py     the four publication figures        -> figures/fig_*.png
     run.py               orchestrator
+
+## Added after review (Sep 2026)
+
+| module / file | what |
+|---|---|
+| `evalaware/transplant.py`, `job_transplant.sh` | system-prompt transplant on the 56 prompt_injection rows (C2 test). FINDINGS §3.1 |
+| `evalaware/extra_experiments.py` | internal-vs-verbalised 2x2, cross-regime transfer, random-direction control. FINDINGS §7b |
+| `evalaware/pub_figures.py` | publication figures `figures/pub_*.png`, one semantic colour system, captions live in the write-up |
+| `evalaware/extra_figures.py` | earlier review figures `figures/fig_e..i_*.png` (captions baked in) |
+| `build_writeup_v3.py`, `build_writeup_v4.py` | docx builders; v4 is the current write-up |
+
+Environment: `source /mnt/scratch/bgxp240/interp/activate.sh` first. The default conda env has no sklearn and pytest collection fails outright without it.

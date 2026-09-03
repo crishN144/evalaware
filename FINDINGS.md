@@ -280,6 +280,33 @@ Findings:
   (`tests/test_probe.py::test_shuffled_labels_give_chance_auroc`).
 - **The scaler is fit inside each CV fold**, not on all data (asserted by test).
 
+## 7b. Three more controls (review-requested; CPU only)
+
+Recompute: `python -m evalaware.extra_experiments` -> `$A/extra_experiments.json`
+
+**Internal vs verbalised.** Does the honest probe agree with the same model's own
+"is this an eval?" answer? Barely. Spearman rho between honest P(eval) and just-ask
+is 0.12 (4B) / 0.16 (8B); splitting each score at its
+median, the two disagree on 44% / 43% of rows. Just-ask calls
+88% / 76% of all rows "eval" (and 86% / 75% of the deploy-labelled ones),
+the same over-classification Needham et al. report for frontier models.
+
+**Cross-regime transfer.** Train on chat rows, test on agentic rows, and the reverse:
+
+| | chat -> agentic | agentic -> chat | LOFO within chat | LOFO within agentic |
+|---|---|---|---|---|
+| Qwen3-4B | 0.741 | 0.537 | 0.685 | 0.742 |
+| Qwen3-8B | 0.490 | 0.473 | 0.644 | 0.692 |
+
+Transfer across the chat/agentic boundary is asymmetric on 4B and absent on 8B.
+
+**Random-direction control.** AUROC of standardised activations projected onto 200
+random unit directions: 0.504 ± 0.073 (4B), 0.497 ± 0.082 (8B). Folded
+(max(a, 1-a)) 95th percentile 0.642 / 0.652. The honest corpus-wide 0.714 / 0.668
+clears that envelope; the smolagents 0.63 does not clearly clear it, which is one more
+reason to call that number an indication rather than a value. Nguyen et al. report
+0.517 for a random Gaussian probe on their data.
+
 ---
 
 ## 8. Known limitations
@@ -308,5 +335,7 @@ Findings:
 | `honest_reliability.json` | §5 |
 | `sensitivity.json` | §6 |
 | `transplant_Qwen3-*.json` | §3.1 transplant, all four conditions |
+| `extra_experiments.json` | §7b internal-vs-verbal, cross-regime, random direction |
+| `figures/pub_*.png` | publication figures, captions live in the write-up |
 | `figures/fig_e..i_*.png` | purity scan, per-category scores, annotators, lengths, transplant |
 | `figures/fig_a..d_*.png` | the four figures, captions state the honest reading |
