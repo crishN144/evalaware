@@ -1,0 +1,101 @@
+{
+  "claude35sonnet": {
+    "n": 858,
+    "blackbox_auroc": 0.8199811188197068,
+    "whitebox_auroc": 0.9569410292438746,
+    "human_auroc": 0.9134758935628349,
+    "corr_wb_bb": 0.5192028946455549,
+    "blackbox_auroc_chat": 0.789412706437479,
+    "whitebox_auroc_chat": 0.9515293225480284,
+    "blackbox_auroc_agentic": 0.8694943092440085,
+    "whitebox_auroc_agentic": 0.9632876839085778
+  },
+  "claude37sonnet": {
+    "n": 858,
+    "blackbox_auroc": 0.8005208790726267,
+    "whitebox_auroc": 0.9569410292438746,
+    "human_auroc": 0.9134758935628349,
+    "corr_wb_bb": 0.4892051003623297,
+    "blackbox_auroc_chat": 0.7463662790697675,
+    "whitebox_auroc_chat": 0.9515293225480284,
+    "blackbox_auroc_agentic": 0.8647288794299991,
+    "whitebox_auroc_agentic": 0.9632876839085778
+  },
+  "claude37sonnetthinking": {
+    "n": 858,
+    "blackbox_auroc": 0.8132025555457978,
+    "whitebox_auroc": 0.9569410292438746,
+    "human_auroc": 0.9134758935628349,
+    "corr_wb_bb": 0.5147550281022178,
+    "blackbox_auroc_chat": 0.718012723289518,
+    "whitebox_auroc_chat": 0.9515293225480284,
+    "blackbox_auroc_agentic": 0.9114809845470528,
+    "whitebox_auroc_agentic": 0.9632876839085778
+  },
+  "gemini25flash": {
+    "n": 858,
+    "blackbox_auroc": 0.8152086809519627,
+    "whitebox_auroc": 0.9569410292438746,
+    "human_auroc": 0.9134758935628349,
+    "corr_wb_bb": 0.49608736609659765,
+    "blackbox_auroc_chat": 0.7684635153353555,
+    "whitebox_auroc_chat": 0.9515293225480284,
+    "blackbox_auroc_agentic": 0.8948482465068937,
+    "whitebox_auroc_agentic": 0.9632876839085778
+  },
+  "gemini25pro": {
+    "n": 858,
+    "blackbox_auroc": 0.8155627030824626,
+    "whitebox_auroc": 0.9569410292438746,
+    "human_auroc": 0.9134758935628349,
+    "corr_wb_bb": 0.5167398962522853,
+    "blackbox_auroc_chat": 0.6954941860465117,
+    "whitebox_auroc_chat": 0.9515293225480284,
+    "blackbox_auroc_agentic": 0.9405015267881929,
+    "whitebox_auroc_agentic": 0.9632876839085778
+  },
+  "gpt41": {
+    "n": 858,
+    "blackbox_auroc": 0.8131943224729955,
+    "whitebox_auroc": 0.9569410292438746,
+    "human_auroc": 0.9134758935628349,
+    "corr_wb_bb": 0.491092378811428,
+    "blackbox_auroc_chat": 0.7603956016177957,
+    "whitebox_auroc_chat": 0.9515293225480284,
+    "blackbox_auroc_agentic": 0.8690894790413621,
+    "whitebox_auroc_agentic": 0.9632876839085778
+  },
+  "gpt41mini": {
+    "n": 858,
+    "blackbox_auroc": 0.7341678010011417,
+    "whitebox_auroc": 0.9569410292438746,
+    "human_auroc": 0.9134758935628349,
+    "corr_wb_bb": 0.3608370515899546,
+    "blackbox_auroc_chat": 0.6984959555106168,
+    "whitebox_auroc_chat": 0.9515293225480284,
+    "blackbox_auroc_agentic": 0.8327241602664939,
+    "whitebox_auroc_agentic": 0.9632876839085778
+  },
+  "gpt4o": {
+    "n": 858,
+    "blackbox_auroc": 0.7782504171423554,
+    "whitebox_auroc": 0.9569410292438746,
+    "human_auroc": 0.9134758935628349,
+    "corr_wb_bb": 0.4624973707445601,
+    "blackbox_auroc_chat": 0.7601744186046512,
+    "whitebox_auroc_chat": 0.9515293225480284,
+    "blackbox_auroc_agentic": 0.8146109003423707,
+    "whitebox_auroc_agentic": 0.9632876839085778
+  },
+  "o4minimedium": {
+    "n": 858,
+    "blackbox_auroc": 0.7174052647756214,
+    "whitebox_auroc": 0.9569410292438746,
+    "human_auroc": 0.9134758935628349,
+    "corr_wb_bb": 0.351869624490308,
+    "blackbox_auroc_chat": 0.6815807212672733,
+    "whitebox_auroc_chat": 0.9515293225480284,
+    "blackbox_auroc_agentic": 0.8028476913111873,
+    "whitebox_auroc_agentic": 0.9632876839085778
+  }
+}

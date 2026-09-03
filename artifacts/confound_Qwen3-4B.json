@@ -1,0 +1,381 @@
+{
+  "layer": 34,
+  "random_cv_auroc": 0.9562616917575495,
+  "leave_one_family_out": {
+    "per_family": {
+      "agentharm": {
+        "n": 32,
+        "pos_rate": 1.0,
+        "mean_score": 0.6495823860168457,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "aider": {
+        "n": 129,
+        "pos_rate": 0.24031007751937986,
+        "mean_score": 0.19954393804073334,
+        "auroc": 0.9476629361421988
+      },
+      "author_claude": {
+        "n": 8,
+        "pos_rate": 0.0,
+        "mean_score": 0.6347298622131348,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "awesome_chatgpt": {
+        "n": 19,
+        "pos_rate": 0.0,
+        "mean_score": 0.4728594422340393,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "aya_redteaming": {
+        "n": 11,
+        "pos_rate": 1.0,
+        "mean_score": 0.8919762969017029,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "categoricalharmfulqa": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.9960321187973022,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "cdial_bias": {
+        "n": 19,
+        "pos_rate": 0.0,
+        "mean_score": 0.9928402304649353,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "civics": {
+        "n": 11,
+        "pos_rate": 1.0,
+        "mean_score": 0.6659643054008484,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "continue_dev": {
+        "n": 23,
+        "pos_rate": 0.0,
+        "mean_score": 0.4656394124031067,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "cvalues_rlhf": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.7580298185348511,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "cybench": {
+        "n": 32,
+        "pos_rate": 1.0,
+        "mean_score": 0.9901319742202759,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "discrim_eval": {
+        "n": 11,
+        "pos_rate": 1.0,
+        "mean_score": 0.9999894499778748,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "do_not_answer": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.9550386667251587,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "ethics": {
+        "n": 12,
+        "pos_rate": 1.0,
+        "mean_score": 0.9109079837799072,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "gaia_runs": {
+        "n": 6,
+        "pos_rate": 1.0,
+        "mean_score": 0.9999244213104248,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "gest": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.986574649810791,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "harmfulqa": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.22952762246131897,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "hh_rlhf": {
+        "n": 19,
+        "pos_rate": 0.0,
+        "mean_score": 0.520603358745575,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "honeypot": {
+        "n": 15,
+        "pos_rate": 1.0,
+        "mean_score": 0.4765390455722809,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "kobbq": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.9276102781295776,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "llm_global_opinions": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.39031732082366943,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "mmlu": {
+        "n": 12,
+        "pos_rate": 1.0,
+        "mean_score": 0.7425629496574402,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "model_written_evals": {
+        "n": 12,
+        "pos_rate": 1.0,
+        "mean_score": 0.6757462620735168,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "moralexceptqa": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.9998199343681335,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "mvp": {
+        "n": 6,
+        "pos_rate": 1.0,
+        "mean_score": 0.9985899329185486,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "natural_reasoning": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.8882092237472534,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "nl2bash": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.23785729706287384,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "openhands": {
+        "n": 10,
+        "pos_rate": 0.0,
+        "mean_score": 0.7078847289085388,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "or_bench": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.907884955406189,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "prism": {
+        "n": 19,
+        "pos_rate": 0.0,
+        "mean_score": 0.43718695640563965,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "prompt_injection": {
+        "n": 56,
+        "pos_rate": 0.6607142857142857,
+        "mean_score": 0.653967559337616,
+        "auroc": 0.30156472261735423
+      },
+      "prosocial_dialog": {
+        "n": 19,
+        "pos_rate": 0.0,
+        "mean_score": 0.45081380009651184,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "real_toxicity_prompts": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.8165165185928345,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "researchy_questions": {
+        "n": 19,
+        "pos_rate": 0.0,
+        "mean_score": 0.22147424519062042,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "s_eval": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.39592862129211426,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "sad_deploy": {
+        "n": 19,
+        "pos_rate": 0.0,
+        "mean_score": 0.39201483130455017,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "safetybench": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.8965445756912231,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "sharegpt": {
+        "n": 19,
+        "pos_rate": 0.0,
+        "mean_score": 0.22490094602108002,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "simplesafetytests": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.5866748094558716,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "smolagents": {
+        "n": 159,
+        "pos_rate": 0.4025157232704403,
+        "mean_score": 0.8539444804191589,
+        "auroc": 0.6297697368421052
+      },
+      "swe_gym": {
+        "n": 32,
+        "pos_rate": 1.0,
+        "mean_score": 0.46331921219825745,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "swebench": {
+        "n": 32,
+        "pos_rate": 1.0,
+        "mean_score": 0.6426218152046204,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "toxic_chat": {
+        "n": 17,
+        "pos_rate": 0.0,
+        "mean_score": 0.3993641436100006,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "toxigen_data": {
+        "n": 17,
+        "pos_rate": 0.0,
+        "mean_score": 0.7446135878562927,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "ultrasafety": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.555476188659668,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "wmdp": {
+        "n": 11,
+        "pos_rate": 1.0,
+        "mean_score": 0.9844688177108765,
+        "auroc": null,
+        "reason": "single-class family"
+      },
+      "xstest_v2_copy": {
+        "n": 10,
+        "pos_rate": 1.0,
+        "mean_score": 0.9952558279037476,
+        "auroc": null,
+        "reason": "single-class family"
+      }
+    },
+    "n_families": 47,
+    "n_families_scored": 3,
+    "macro_auroc": 0.6263324652005527,
+    "median_auroc": 0.6297697368421052,
+    "min_auroc": 0.30156472261735423,
+    "pooled_auroc": 0.7139406048111714,
+    "pooled_n": 976
+  },
+  "mixed_family_auroc_lofo": {
+    "aider": {
+      "n": 129,
+      "pos_rate": 0.24031007751937986,
+      "auroc": 0.9476629361421988
+    },
+    "prompt_injection": {
+      "n": 56,
+      "pos_rate": 0.6607142857142857,
+      "auroc": 0.30156472261735423
+    },
+    "smolagents": {
+      "n": 159,
+      "pos_rate": 0.4025157232704403,
+      "auroc": 0.6297697368421052
+    },
+    "_macro": 0.6263324652005527
+  },
+  "within_stratum": {
+    "chat": {
+      "n": 500,
+      "auroc": 0.9421733653956257,
+      "pos_rate": 0.574
+    },
+    "agentic": {
+      "n": 476,
+      "auroc": 0.9688141592920354,
+      "pos_rate": 0.5252100840336135
+    }
+  },
+  "length_matched": {
+    "auroc": 0.9509261964667369,
+    "auroc_sd": 0.003313082606607444,
+    "n_per_rep": 666,
+    "n_reps": 200,
+    "n_bins": 50,
+    "n_usable_bins": 50,
+    "residual_log_len_gap": -0.004539012971232666
+  },
+  "grouped_cv_auroc": 0.6887839723766982
+}

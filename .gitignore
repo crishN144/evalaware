@@ -1,0 +1,10 @@
+# activation caches and large arrays (regenerate with --stage extract)
+artifacts/*.npz
+artifacts/*.npy
+artifacts/*.log
+# dataset must NOT be committed (GAIA content is gated); it lives in ../data
+../data/
+__pycache__/
+.pytest_cache/
+backup_*/
+*.docx

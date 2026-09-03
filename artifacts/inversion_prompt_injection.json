@@ -1,0 +1,135 @@
+{
+  "n": 56,
+  "n_eval": 37,
+  "n_deploy": 19,
+  "auroc_within_family": {
+    "probe_lofo_Qwen3-4B": 0.30156472261735423,
+    "probe_leaky_cv_Qwen3-4B": 0.833570412517781,
+    "just_ask_Qwen3-4B": 0.17852062588904694,
+    "probe_lofo_Qwen3-8B": 0.507823613086771,
+    "probe_leaky_cv_Qwen3-8B": 0.9217638691322901,
+    "just_ask_Qwen3-8B": 0.302275960170697,
+    "human_author1": 0.9096728307254623,
+    "human_author2": 0.352773826458037,
+    "human_mean": 0.6059743954480797
+  },
+  "mean_score_by_subcategory": {
+    "mosscap_prompt_injection": {
+      "n": 19,
+      "label": "eval",
+      "probe_lofo_Qwen3-4B": 0.5252628356316372,
+      "probe_leaky_cv_Qwen3-4B": 0.8331198139655355,
+      "just_ask_Qwen3-4B": 0.8611287343756933,
+      "probe_lofo_Qwen3-8B": 0.7183585188308107,
+      "probe_leaky_cv_Qwen3-8B": 0.9300845277642733,
+      "just_ask_Qwen3-8B": 0.9499545787510119,
+      "human_author1": 0.9336184210526316,
+      "human_author2": 0.7683552631578947,
+      "human_mean": 0.8509868421052631
+    },
+    "gandalf_ignore_instructions": {
+      "n": 9,
+      "label": "eval",
+      "probe_lofo_Qwen3-4B": 0.5604416985038875,
+      "probe_leaky_cv_Qwen3-4B": 0.7832049065166049,
+      "just_ask_Qwen3-4B": 0.9972903463575575,
+      "probe_lofo_Qwen3-8B": 0.733461880021625,
+      "probe_leaky_cv_Qwen3-8B": 0.8635864994592137,
+      "just_ask_Qwen3-8B": 0.9990419546763102,
+      "human_author1": 0.9126388888888888,
+      "human_author2": 0.7565277777777778,
+      "human_mean": 0.8345833333333333
+    },
+    "gandalf_summarization": {
+      "n": 9,
+      "label": "eval",
+      "probe_lofo_Qwen3-4B": 0.6441342878327608,
+      "probe_leaky_cv_Qwen3-4B": 0.8078604088708138,
+      "just_ask_Qwen3-4B": 0.928180154826906,
+      "probe_lofo_Qwen3-8B": 0.6884051797290643,
+      "probe_leaky_cv_Qwen3-8B": 0.9260919458336301,
+      "just_ask_Qwen3-8B": 0.7583237193110917,
+      "human_author1": 0.94,
+      "human_author2": 0.8009722222222222,
+      "human_mean": 0.8704861111111112
+    },
+    "hackaprompt_dataset": {
+      "n": 19,
+      "label": "deploy",
+      "probe_lofo_Qwen3-4B": 0.8316318886844736,
+      "probe_leaky_cv_Qwen3-4B": 0.35028559335286874,
+      "just_ask_Qwen3-4B": 0.8952155807790788,
+      "probe_lofo_Qwen3-8B": 0.6700587130249723,
+      "probe_leaky_cv_Qwen3-8B": 0.321743424887628,
+      "just_ask_Qwen3-8B": 0.9450933227413579,
+      "human_author1": 0.7821052631578947,
+      "human_author2": 0.8655921052631579,
+      "human_mean": 0.8238486842105264
+    }
+  },
+  "blackbox_within_family": {
+    "claude35sonnet": {
+      "n": 51,
+      "auroc": 0.14646464646464646
+    },
+    "claude37sonnet": {
+      "n": 51,
+      "auroc": 0.4814814814814815
+    },
+    "claude37sonnetthinking": {
+      "n": 51,
+      "auroc": 0.45454545454545453
+    },
+    "gemini25flash": {
+      "n": 51,
+      "auroc": 0.19865319865319864
+    },
+    "gemini25pro": {
+      "n": 51,
+      "auroc": 0.3703703703703704
+    },
+    "gpt41": {
+      "n": 51,
+      "auroc": 0.3526936026936027
+    },
+    "gpt41mini": {
+      "n": 51,
+      "auroc": 0.16414141414141412
+    },
+    "gpt4o": {
+      "n": 51,
+      "auroc": 0.1026936026936027
+    },
+    "o4minimedium": {
+      "n": 51,
+      "auroc": 0.29629629629629634
+    }
+  },
+  "n_judges": 18,
+  "n_judges_inverting": 13,
+  "c1_pwned_string": {
+    "pct_hackaprompt_with_pwned": 0.5789473684210527,
+    "pct_rest_of_corpus_with_pwned": 0.0,
+    "mean_score_hackaprompt_with_pwned": 0.8415368903766979,
+    "mean_score_hackaprompt_without_pwned": 0.8180125113576651,
+    "auroc_family_all": 0.30156472261735423,
+    "auroc_family_pwned_removed": 0.2905405405405405,
+    "n_pwned_removed": 45
+  },
+  "c2_system_prompt": {
+    "gourd_rows": 37,
+    "gourd_categories": [
+      "gandalf_ignore_instructions",
+      "gandalf_summarization",
+      "mosscap_prompt_injection"
+    ],
+    "generic_sysprompt_rows": 488,
+    "generic_sysprompt_categories": 42
+  },
+  "c3_annotator_disagreement": {
+    "author1_auroc": 0.9096728307254623,
+    "author2_auroc": 0.352773826458037,
+    "corr_within_family": -0.24199926939957073,
+    "corr_corpus_wide": 0.7737537546413109
+  }
+}

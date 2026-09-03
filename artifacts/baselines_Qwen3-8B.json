@@ -1,0 +1,9 @@
+{
+  "tfidf_auroc": 0.9359514386429288,
+  "length_only_auroc": 0.592325116758504,
+  "median_tokens_eval": 237.0,
+  "median_tokens_deploy": 1471.0,
+  "human_author1_auroc": 0.9042559057957182,
+  "human_author2_auroc": 0.8808490602053931,
+  "just_ask_auroc": 0.6071717930118816
+}
