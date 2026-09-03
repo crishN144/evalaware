@@ -250,9 +250,9 @@ the precision formula is wrong, the whole reliability claim is wrong):
 
 **Expect:** ≈ 0.185, matching the number above.
 
-**Read with your own eyes:** `figures/fig_c_reliability.png`. Confirm the middle
-panel shows precision rising steeply with base rate (0.19 → 0.54 → 0.71) — i.e.
-the conclusion is specific to *rare* evals and would not hold at 10%.
+**Read with your own eyes:** `figures/pub_c_precision_vs_base_rate.png`. Confirm the
+honest 4B curve reads 0.19 -> 0.54 -> 0.71 at 1% / 5% / 10% — i.e. the conclusion is
+specific to *rare* evals and would not hold at 10%.
 
 ` VERDICT: ____`
 

@@ -8,3 +8,9 @@ __pycache__/
 .pytest_cache/
 backup_*/
 *.docx
+
+# raw transcript text from the gated dataset: regenerate locally, never publish
+artifacts/inversion_transcripts.txt
+# exports
+*.zip
+export_final/

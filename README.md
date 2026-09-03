@@ -1,110 +1,121 @@
 # evalaware
 
-Probing Qwen3 residual streams for evaluation-awareness, on the
-`jjpn2/eval_awareness` benchmark (976 transcripts, 537 eval / 439 deploy).
+An audit of linear eval-awareness probes on real transcripts. Qwen3-4B and Qwen3-8B,
+the `jjpn2/eval_awareness` benchmark (976 transcripts from 60 source datasets), one
+question: does the published probe result survive a held-out-source split and a
+realistic base rate?
 
-**Results live in [FINDINGS.md](FINDINGS.md).**
-**To check them yourself, run [VERIFY_CRISH.md](VERIFY_CRISH.md).**
+It does not. The 0.956 AUROC that random cross-validation reports is mostly the probe
+recognising which corpus a transcript came from; a bag of words with no model gets
+0.936. Hold out whole source families and it falls to 0.714 / 0.668. Score that at a 1%
+base rate and the monitor prior work proposed raises four false alarms per catch.
 
-This is an audit of an existing method, not a new one. Linear probing for
-eval-awareness is a crowded subfield (Nguyen 2507.01786; Chaudhary 2509.13333;
-Manek 2606.29196; Abdelnabi & Salem 2505.14617; Hua & Nanda 2510.20487). No
-priority is claimed for probing, for open models, or for Qwen. The contribution
-is the confound audit plus low-base-rate reliability on a benchmark none of them
-used. The Qwen late-layer peak and non-monotonic scaling corroborate Manek.
+![precision against base rate](figures/pub_c_precision_vs_base_rate.png)
 
-    source /mnt/scratch/bgxp240/interp/activate.sh
-    cd /mnt/scratch/bgxp240/interp/evalaware
-    python -m pytest -q -m "not gpu"        # 32 tests, ~70s, no GPU needed
-    python -m evalaware.run --stage all --model Qwen/Qwen3-4B --just-ask
+*Slate: the honest probe. Crimson: what the leaky evaluation promised. The 1% column is
+where a monitor lives.*
 
-Stages run in order and each caches to `artifacts/`, so any one can be rerun
-alone: `extract -> probe -> baselines -> reliability -> confound -> compare`.
-Only `extract` and `--just-ask` need a GPU.
+Everything below is recomputable from the raw dataset and raw activations. The numbers
+are in [FINDINGS.md](FINDINGS.md); the recompute-from-raw checklist for the six headline
+claims is [VERIFY_CRISH.md](VERIFY_CRISH.md). This is an audit of an existing method,
+not a new one, and claims no priority for probing, for open models, or for Qwen.
 
-## READ THIS BEFORE QUOTING ANY NUMBER
+## What is in here
 
-**No raw category in this corpus is label-mixed — 0 of 60.** Every source
-dataset is entirely eval or entirely deploy, so category identity determines
-the label outright. Any classifier that recognises the source corpus scores
-near-perfectly without representing anything about evaluation-awareness.
+```
+evalaware/          the package
+  data.py             load the benchmark, render transcripts, group 60 categories -> 47 families
+  extract.py          residual-stream activations via nnsight, cached to artifacts/*.npz
+  probe.py            per-layer logistic regression, fold-internal scaling
+  confound.py         grouped CV, leave-one-family-out, length matching
+  reliability.py      TPR at a FPR budget, precision at a base rate, ECE, bootstrap CIs
+  baselines.py        TF-IDF, length-only, just-ask-the-model
+  compare_blackbox.py the benchmark paper's frontier-model judgments on the shared rows
+  inversion.py        the prompt_injection family: judges, PWNED test, transcript dump
+  transplant.py       system-prompt transplant on the 56 prompt_injection rows (C2 test)
+  extra_experiments.py probe vs just-ask, cross-regime transfer, random-direction floor
+  sensitivity.py      28-config sweep: 7 layers x 2 poolings x 2 models
+  pub_figures.py      the 12 figures, one colour system, captions live in the write-up
+  run.py              the staged pipeline
+tests/              32 CPU tests + 2 GPU tests; pin fold-internal scaling, the shuffled-label
+                    null, the annotator column mapping, the nnsight output shape
+artifacts/          every cached metric as JSON (activations are not committed, see below)
+figures/            pub_*.png
+job_*.sh            SLURM scripts for the GPU stages
+build_writeup_v5.py the write-up as a docx, built from these artifacts
+```
 
-Consequences, all measured on Qwen3-4B layer 34:
+## Reproduce
 
-| number | value | what it means |
-|---|---|---|
-| random-CV AUROC | 0.956 | **do not quote this** - near-twins on both sides of the split |
-| TF-IDF surface baseline | 0.936 | word n-grams alone get almost all of it |
-| grouped CV (by family) | 0.689 | |
-| leave-one-family-out, pooled | 0.714 | the honest generalisation number (0.67-0.74 across layers/poolings) |
-| mixed-family macro | 0.626 | the three families where label varies within source |
+```
+source /mnt/scratch/bgxp240/interp/activate.sh      # the default conda env has no sklearn
+python -m pytest -q -m "not gpu"                     # 32 passed, ~15 s
+```
 
-The three label-mixed *families* exist only because `data.family_of` merges
-categories that share a scaffold: smolagents (gaia=eval vs real=deploy), aider
-(full=eval vs commit/multi=deploy), prompt_injection (mosscap/gandalf=eval vs
-hackaprompt=deploy). Those 344 rows are the only place in the corpus where the
-label moves while the source is roughly held fixed, so they carry most of the
-evidential weight and deserve more than the rest combined.
+The only GPU work is activation extraction, once per model:
 
-## Controls that came back clean
+```
+python -m evalaware.run --stage extract --model Qwen/Qwen3-4B     # ~10 min on an L40S
+python -m evalaware.run --stage extract --model Qwen/Qwen3-8B     # needs ~20 GiB free; the
+                                                                  # preflight fails fast if a
+                                                                  # co-tenant holds the card
+```
 
-Length is **not** the confound, contrary to the obvious worry. Eval transcripts
-are *shorter* (median 237 vs 1471 tokens); length tracks scaffold
-(corr(log len, agentic)=0.84), not the label (corr(log len, y)=-0.17).
-Length-matching moves AUROC 0.956 -> 0.951, and `length_matched` reports the
-achieved within-bin length gap so under-matching is visible rather than assumed
-(see `config.LENGTH_MATCH_BINS`).
+Everything after that is CPU: `--stage probe`, `baselines`, `reliability`, `confound`,
+`compare`, or `--stage all`. Then, from the cached activations:
 
-## transformers v5 gotcha, pinned by a test
+```
+python -c "from evalaware import lock_metrics; lock_metrics.lock()"      # FINDINGS §1, bootstrap CIs
+python -c "from evalaware import inversion; inversion.report()"          # §3, the inversion
+sbatch job_transplant.sh                                                 # §3.1, four prompt conditions
+python -m evalaware.extra_experiments                                     # §7b, the three controls
+sbatch job_sens.sh                                                       # §6, 28 configs
+python -m evalaware.pub_figures                                          # figures/pub_*.png
+```
 
-`Qwen3DecoderLayer.forward` returns a bare Tensor, not a tuple. The legacy
-nnsight idiom `layers[i].output[0]` indexes the BATCH dimension and silently
-yields `(seq, hidden)`. Use `layers[i].output`.
-`tests/test_extract.py::test_residual_accessor_returns_batch_seq_hidden` fails
-if this regresses.
+One footgun that cost a stalled job: threaded BLAS oversubscribes on 47 small refits.
+`export OMP_NUM_THREADS=1` before anything that loops over logistic regressions.
 
-## mcq_transcripts column semantics, pinned by a test
+## Two more pictures
 
-`joe` == `eval_author1` and `giles` == `eval_author2` — swapped relative to the
-author1/author2 ordering. `human` is their mean; `is_eval`/`agent` reproduce
-`eval_category`/`scaffold` exactly. 858 of 976 records overlap.
-Getting the annotator mapping backwards silently corrupts every human
-comparison, so `tests/test_compare_blackbox.py` asserts it.
+![only the split changes](figures/pub_a_leaky_vs_honest.png)
 
-## Layout
+*Same probe, same layer, same corpus. Only the split changes. The crimson bars are an
+artefact of a benchmark in which 0 of 60 source categories mix labels: the label is
+literally a dictionary lookup on the corpus name in the benchmark's own `constants.py`.*
 
-    config.py            paths, layers, seeds, constants
-    data.py              load, flatten content, format transcript, labels, families
-    extract.py           nnsight extraction -> artifacts/acts_<model>.npz
-    baselines.py         just-ask, TF-IDF, length-only
-    probe.py             per-layer logistic probe, AUROC
-    reliability.py       ROC, TPR@FPR, precision at deploy base rate, ECE, bootstrap
-    confound.py          leave-one-family-out, within-stratum, length-matched
-    compare_blackbox.py  probe vs the paper's mcq_transcripts
-    lock_metrics.py      headline table + bootstrap CIs      -> locked_metrics.json
-    inversion.py         prompt_injection inversion evidence -> inversion_*.{json,txt}
-    mixed.py             the 3 label-mixed families          -> mixed_families.json
-    honest_reliability.py  1% base-rate reliability, honest  -> honest_reliability.json
-    sensitivity.py       layer x pooling sweep               -> sensitivity.json
-    final_figures.py     the four publication figures        -> figures/fig_*.png
-    run.py               orchestrator
+![the transplant](figures/pub_i_transplant.png)
 
-## Added after review (Sep 2026)
+*The one family the probe scores below chance, prompt_injection, does not recover when the
+system prompts are swapped across the label boundary. The signal is in the user turns;
+the label, not the probe, is what is contested there.*
 
-| module / file | what |
-|---|---|
-| `evalaware/transplant.py`, `job_transplant.sh` | system-prompt transplant on the 56 prompt_injection rows (C2 test). FINDINGS §3.1 |
-| `evalaware/extra_experiments.py` | internal-vs-verbalised 2x2, cross-regime transfer, random-direction control. FINDINGS §7b |
-| `evalaware/pub_figures.py` | publication figures `figures/pub_*.png`, one semantic colour system, captions live in the write-up |
-| `evalaware/extra_figures.py` | earlier review figures `figures/fig_e..i_*.png` (captions baked in) |
-| `build_writeup_v3.py`, `build_writeup_v4.py` | docx builders; v4 is the current write-up |
+## What is deliberately not in the repository
 
-Environment: `source /mnt/scratch/bgxp240/interp/activate.sh` first. The default conda env has no sklearn and pytest collection fails outright without it.
+- **The dataset.** `jjpn2/eval_awareness` is gated and ships encrypted to keep it out of
+  training corpora. Fetch it yourself from Hugging Face; `config.DATA` points at where it
+  lands. Nothing here redistributes it.
+- **`artifacts/inversion_transcripts.txt`.** The 39 raw prompt_injection transcripts, dumped
+  for reading. Same reason: raw benchmark text stays local. Regenerate with
+  `python -c "from evalaware import inversion; inversion.dump_transcripts()"`.
+- **Activation caches** (`artifacts/*.npz`, `*.npy`, hundreds of MB). Regenerate with
+  `--stage extract`.
+- **The `.docx` write-ups.** Built from this repo by `build_writeup_v5.py`; the document is
+  the deliverable, the repo is the evidence.
 
-### Figure fonts
+## Figure fonts
 
-`evalaware/pub_figures.py` asks for Inter (text) and JetBrains Mono (code), both OFL-licensed,
-falling back to DejaVu if absent. To match the shipped PNGs, drop the static TTFs into
-`~/.fonts/evalaware/ttf/` (Inter-{Regular,SemiBold,Bold}.ttf, JetBrainsMono-Regular.ttf) and
-delete matplotlib's `fontlist*.json` cache once. Sources: github.com/rsms/inter (v4.1),
+`pub_figures.py` asks for Inter and JetBrains Mono (both OFL) and falls back to DejaVu.
+To match the committed PNGs, put the static TTFs in `~/.fonts/evalaware/ttf/` and delete
+matplotlib's `fontlist*.json` cache once. Sources: github.com/rsms/inter (v4.1),
 github.com/JetBrains/JetBrainsMono (v2.304).
+
+## Related work, in one breath
+
+Needham et al. (2505.23836) built the benchmark. Nguyen et al. (2507.01786) trained the
+foundational probe and proposed monitoring. Chaudhary et al. (2509.13333) fit a scaling
+law and excluded Qwen. Manek (2606.29196) put Qwen back and found the late-layer peak this
+repo corroborates. Abdelnabi & Salem (2505.14617) and Hua, Qin, Marks & Nanda
+(2510.20487) steer the direction causally. Devbunova (2603.19426) found the format
+confound on synthetic prompts; this repo finds the provenance confound on real ones.
+Full positioning, with what each paper does and does not test, is in the write-up.

@@ -162,7 +162,7 @@ organic real-world usage.
 
 ### 3.1 The system-prompt transplant (C2 test)
 
-Recompute: `sbatch job_transplant.sh` -> `$A/transplant_Qwen3-4B.json`, `$A/transplant_Qwen3-8B.json`, `figures/fig_i_transplant.png`
+Recompute: `sbatch job_transplant.sh` -> `$A/transplant_Qwen3-4B.json`, `$A/transplant_Qwen3-8B.json`, `figures/pub_i_transplant.png`
 
 Same 56 rows, user turns untouched, system prompts swapped; scored by a probe
 fit on the other 46 families (the leave-one-family-out fit). Re-extracting the
@@ -330,12 +330,10 @@ reason to call that number an indication rather than a value. Nguyen et al. repo
 |---|---|
 | `locked_metrics.json` | §1 table, all bootstrap CIs |
 | `inversion_prompt_injection.json` | §3, all judges, C1/C2/C3 evidence |
-| `inversion_transcripts.txt` | 39 raw transcripts, both sides, human-readable |
+| `inversion_transcripts.txt` | 39 raw transcripts, both sides; local only (raw benchmark text is not committed), regenerate with `inversion.dump_transcripts()` |
 | `mixed_families.json` | §4 incl. `_length_audit` |
 | `honest_reliability.json` | §5 |
 | `sensitivity.json` | §6 |
 | `transplant_Qwen3-*.json` | §3.1 transplant, all four conditions |
 | `extra_experiments.json` | §7b internal-vs-verbal, cross-regime, random direction |
-| `figures/pub_*.png` | publication figures, captions live in the write-up |
-| `figures/fig_e..i_*.png` | purity scan, per-category scores, annotators, lengths, transplant |
-| `figures/fig_a..d_*.png` | the four figures, captions state the honest reading |
+| `figures/pub_*.png` | the 12 figures used in the write-up (`python -m evalaware.pub_figures`); captions live in the write-up |
