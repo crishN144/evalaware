@@ -89,7 +89,7 @@ python -m evalaware.pub_figures                                          # figur
 One footgun that cost a stalled job: threaded BLAS oversubscribes on 47 small refits.
 `export OMP_NUM_THREADS=1` before anything that loops over logistic regressions.
 
-## Two more pictures
+
 
 ![only the split changes](figures/pub_a_leaky_vs_honest.png)
 
