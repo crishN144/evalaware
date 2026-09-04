@@ -52,7 +52,6 @@ run_lock.sh         re-lock the headline metrics
 run_sens.sh         drive the 28-config sensitivity sweep
 VERIFY_CRISH.md     the verification record: each headline claim re-derived from raw data, with what came out
 verify.sh           re-runs the whole record in one go and writes a timestamped log
-build_writeup_v5.py the write-up as a docx, built from these artifacts
 ```
 
 ## Reproduce
@@ -113,17 +112,10 @@ the label, not the probe, is what is contested there.*
   `python -c "from evalaware import inversion; inversion.dump_transcripts()"`.
 - **Activation caches** (`artifacts/*.npz`, `*.npy`, hundreds of MB). Regenerate with
   `--stage extract`.
-- **The `.docx` write-ups.** Built from this repo by `build_writeup_v5.py`; the document is
-  the deliverable, the repo is the evidence.
 
-## Figure fonts
 
-`pub_figures.py` asks for Inter and JetBrains Mono (both OFL) and falls back to DejaVu.
-To match the committed PNGs, put the static TTFs in `~/.fonts/evalaware/ttf/` and delete
-matplotlib's `fontlist*.json` cache once. Sources: github.com/rsms/inter (v4.1),
-github.com/JetBrains/JetBrainsMono (v2.304).
 
-## Related work, in one breath
+## Related work
 
 Needham et al. (2505.23836) built the benchmark. Nguyen et al. (2507.01786) trained the
 foundational probe and proposed monitoring. Chaudhary et al. (2509.13333) fit a scaling
