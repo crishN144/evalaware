@@ -1,4 +1,4 @@
-# evalaware
+<img src="./assets/banner.svg" alt="evalaware — AUROC 0.956 falls to 0.714 when whole source families are held out" width="100%" />
 
 An audit of linear eval-awareness probes on real transcripts. Qwen3-4B and Qwen3-8B,
 the `jjpn2/eval_awareness` benchmark (976 transcripts from 60 source datasets), one
